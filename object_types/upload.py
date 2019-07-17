@@ -6,7 +6,7 @@ from arcor2.upload_object_type import upload
 
 def main():
 
-    upload("arcor2_kinali.object_types.kinali_robot", "KinaliRobot")
+    upload("arcor2_kinali.object_types.kinali_robot/KinaliRobot")
 
 
 if __name__ == "__main__":

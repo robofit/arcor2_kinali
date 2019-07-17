@@ -2,9 +2,9 @@ from arcor2.object_types import Robot
 from arcor2.object_types.utils import action
 from arcor2.data import ActionMetadata, ActionPoint
 from arcor2.exceptions import RobotException
-from arcor2_kinali.swagger_client import ApirobotMoveApi
+from arcor2_kinali.swagger_client import ApirobotMoveApi, ApiClient
 from arcor2_kinali.swagger_client.models import Move, Pose6d, Vec3
-from arcor2_kinali.object_types import API_CLIENT
+from arcor2_kinali.conf import API_CLIENT_CONF
 from arcor2_kinali.swagger_client.rest import ApiException
 import time
 
@@ -19,7 +19,7 @@ class KinaliRobot(Robot):
 
         super(KinaliRobot, self).__init__(*args, **kwargs)
 
-        self.api = ApirobotMoveApi(API_CLIENT)
+        self.api = ApirobotMoveApi(ApiClient(API_CLIENT_CONF))
 
     @action
     def move_to(self, target: ActionPoint, end_effector: str, speed: int) -> None:

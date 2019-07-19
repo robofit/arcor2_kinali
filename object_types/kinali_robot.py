@@ -30,7 +30,7 @@ class KinaliRobot(Robot):
 
         # TODO convert orientation from quaternion to rpy (which convention?)
         try:
-            self.api.put(move=Move(pose=Pose6d(position=Vec3(*target.pose.position), rotation=Vec3(0, 0, 0))))
+            self.api.put(move=Move(pose=Pose6d(position=Vec3(target.pose.position.to_list()), rotation=Vec3(0, 0, 0))))
         except ApiException as e:
             print(e)
             raise RobotException()
@@ -42,4 +42,4 @@ class KinaliRobot(Robot):
         if dur < 1.0:
             time.sleep(1.0 - dur)
 
-    move_to.__action__ = ActionMetadata("Move", free=True, blocking=True)
+    move_to.__action__ = ActionMetadata(free=True, blocking=True)

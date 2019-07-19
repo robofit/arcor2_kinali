@@ -26,6 +26,7 @@ from six.moves.urllib.parse import quote
 from arcor2_kinali.swagger_client.configuration import Configuration
 import arcor2_kinali.swagger_client.models
 from arcor2_kinali.swagger_client import rest
+from arcor2_kinali import swagger_client
 
 
 class ApiClient(object):

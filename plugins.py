@@ -16,9 +16,9 @@ class KinaliRpcPlugin(RpcPlugin):
         if not resp["result"]:
             return
 
-        if req == "loadProject" and "_id" in args:
-            print("Opening project {}.".format(args["_id"]))
+        if req == "loadProject" and "id" in args:
+            print("Opening project {}.".format(args["id"]))
             try:
-                self.api.open(project_id=args["_id"])
+                self.api.open(project_id=args["id"])
             except ApiException as e:
                 print(e)

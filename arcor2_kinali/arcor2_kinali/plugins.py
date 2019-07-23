@@ -1,8 +1,8 @@
 from arcor2.helpers import RpcPlugin
 from typing import Dict
-from arcor2_kinali.swagger_client import ApiprojectOpenProjectApi, ApiClient
+from swagger_client import ApiprojectOpenProjectApi, ApiClient
 from arcor2_kinali.conf import API_CLIENT_CONF
-from arcor2_kinali.swagger_client.rest import ApiException
+from swagger_client.rest import ApiException
 
 
 class KinaliRpcPlugin(RpcPlugin):

@@ -15,6 +15,6 @@
 from __future__ import absolute_import
 
 # import models into model package
-from arcor2_kinali.swagger_client.models.move import Move
-from arcor2_kinali.swagger_client.models.pose6d import Pose6d
-from arcor2_kinali.swagger_client.models.vec3 import Vec3
+from swagger_client.models.move import Move
+from swagger_client.models.pose6d import Pose6d
+from swagger_client.models.vec3 import Vec3

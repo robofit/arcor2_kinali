@@ -3,7 +3,7 @@ from arcor2.action import action
 from arcor2.data import ActionMetadata, ActionPoint
 from arcor2.exceptions import RobotException
 from swagger_client import RobotApi, ApiClient
-from swagger_client import Move, Pose6d, Vector3
+from swagger_client import Move, Vector3
 from arcor2_kinali.conf import API_CLIENT_CONF
 from swagger_client.rest import ApiException
 import time

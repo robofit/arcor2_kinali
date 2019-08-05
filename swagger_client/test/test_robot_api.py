@@ -16,23 +16,31 @@ from __future__ import absolute_import
 import unittest
 
 import swagger_client
-from swagger_client.models.move import Move  # noqa: E501
+from swagger_client.api.robot_api import RobotApi  # noqa: E501
 from swagger_client.rest import ApiException
 
 
-class TestMove(unittest.TestCase):
-    """Move unit test stubs"""
+class TestRobotApi(unittest.TestCase):
+    """RobotApi unit test stubs"""
 
     def setUp(self):
-        pass
+        self.api = swagger_client.api.robot_api.RobotApi()  # noqa: E501
 
     def tearDown(self):
         pass
 
-    def testMove(self):
-        """Test Move"""
-        # FIXME: construct object with mandatory attributes with example values
-        # model = swagger_client.models.move.Move()  # noqa: E501
+    def test_get(self):
+        """Test case for get
+
+        Gets pose of robot's end-effector.  # noqa: E501
+        """
+        pass
+
+    def test_pose_put(self):
+        """Test case for pose_put
+
+        Moves robot's end-effector to specific pose.  # noqa: E501
+        """
         pass
 
 

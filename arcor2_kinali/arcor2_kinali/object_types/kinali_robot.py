@@ -1,9 +1,9 @@
 from arcor2.object_types import Robot
-from arcor2.object_types_utils import action
+from arcor2.action import action
 from arcor2.data import ActionMetadata, ActionPoint
 from arcor2.exceptions import RobotException
-from swagger_client import ApirobotMoveApi, ApiClient
-from swagger_client import Move, Pose6d, Vec3
+from swagger_client import RobotApi, ApiClient
+from swagger_client import Move, Pose6d, Vector3
 from arcor2_kinali.conf import API_CLIENT_CONF
 from swagger_client.rest import ApiException
 import time
@@ -19,7 +19,7 @@ class KinaliRobot(Robot):
 
         super(KinaliRobot, self).__init__(*args, **kwargs)
 
-        self.api = ApirobotMoveApi(ApiClient(API_CLIENT_CONF))
+        self.api = RobotApi(ApiClient(API_CLIENT_CONF))
 
     @action
     def move_to(self, target: ActionPoint, end_effector: str, speed: int) -> None:
@@ -30,7 +30,9 @@ class KinaliRobot(Robot):
 
         # TODO convert orientation from quaternion to rpy (which convention?)
         try:
-            self.api.put(move=Move(pose=Pose6d(position=Vec3(*target.pose.position), rotation=Vec3(0, 0, 0))))
+            self.api.pose_put(move=Move(position=Vector3(*target.pose.position),
+                                        rotation=Vector3(0, 0, 0),
+                                        end_effector=end_effector))
         except ApiException as e:
             print(e)
             raise RobotException()

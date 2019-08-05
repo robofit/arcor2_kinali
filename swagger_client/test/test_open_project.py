@@ -16,12 +16,12 @@ from __future__ import absolute_import
 import unittest
 
 import swagger_client
-from swagger_client.models.move import Move  # noqa: E501
+from swagger_client.models.open_project import OpenProject  # noqa: E501
 from swagger_client.rest import ApiException
 
 
-class TestMove(unittest.TestCase):
-    """Move unit test stubs"""
+class TestOpenProject(unittest.TestCase):
+    """OpenProject unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,10 +29,10 @@ class TestMove(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testMove(self):
-        """Test Move"""
+    def testOpenProject(self):
+        """Test OpenProject"""
         # FIXME: construct object with mandatory attributes with example values
-        # model = swagger_client.models.move.Move()  # noqa: E501
+        # model = swagger_client.models.open_project.OpenProject()  # noqa: E501
         pass
 
 

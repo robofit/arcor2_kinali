@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  arcor:
+    build: ./arcor2_kinali
+    container_name: arcor2
+    command: /bin/bash /root/arcor2_kinali/docker/arcor2_kinali/start.sh
+    ports:
+      - "6789:6789"
+    environment:
+      - ENV ARCOR2_MONGO_ADDRESS=localhost:27017
+      - ENV ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:5000  
+  kinali:
+    image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver:0.1.0-alpha.3
+    container_name: kinali
+    ports:
+      - "5000:5000"
+  database:
+    image: mongo:latest

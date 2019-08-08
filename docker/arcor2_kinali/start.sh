@@ -1,9 +1,9 @@
 #!/bin/bash  
 
 cd /root/arcor2
-git pull
+git pull origin master
 cd /root/arcor2_kinali
-git pull
+git pull origin master
 cd /root/arcor2_kinali/arcor2_kinali/arcor2_kinali/object_types
 python upload.py
 cd /root/arcor2/arcor2/user_objects

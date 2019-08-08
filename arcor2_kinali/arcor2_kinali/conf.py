@@ -1,4 +1,6 @@
 import swagger_client
+import os
+import sys
 
 try:
     KINALI_RESTAPI_ADDRESS = os.environ["ARCOR2_KINALI_RESTAPI_ADDRESS"]

@@ -5,11 +5,17 @@ services:
     build: ./arcor2_kinali
     container_name: arcor2
     command: /bin/bash /root/arcor2_kinali/docker/arcor2_kinali/start.sh
+    depends_on:
+      - database
     ports:
       - "6789:6789"
     environment:
-      - ENV ARCOR2_MONGO_ADDRESS=localhost:27017
-      - ENV ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:5000  
+      - ARCOR2_MONGO_ADDRESS=database:27017
+      - ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:5000 
+    volumes:
+      - C:\arcor2\arcor2:/root/arcor2/arcor2
+      - C:\arcor2\arcor2\object_types:/root/arcor2/arcor2/object_types
+      - C:\arcor2_kinali\arcor2_kinali:/root/arcor2_kinali/arcor2_kinali
   kinali:
     image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver:0.1.0-alpha.3
     container_name: kinali

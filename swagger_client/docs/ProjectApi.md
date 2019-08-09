@@ -4,11 +4,11 @@ All URIs are relative to *https://localhost*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**put**](ProjectApi.md#put) | **PUT** /api/project/open | Opens the project in Pick Master.
+[**put_open_project**](ProjectApi.md#put_open_project) | **PUT** /api/project/open | Opens the project in Pick Master.
 
 
-# **put**
-> put(open_project=open_project)
+# **put_open_project**
+> put_open_project(open_project=open_project)
 
 Opens the project in Pick Master.
 
@@ -26,9 +26,9 @@ open_project = swagger_client.OpenProject() # OpenProject | The project to open.
 
 try:
     # Opens the project in Pick Master.
-    api_instance.put(open_project=open_project)
+    api_instance.put_open_project(open_project=open_project)
 except ApiException as e:
-    print("Exception when calling ProjectApi->put: %s\n" % e)
+    print("Exception when calling ProjectApi->put_open_project: %s\n" % e)
 ```
 
 ### Parameters

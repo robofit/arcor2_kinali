@@ -20,6 +20,6 @@ class KinaliRpcPlugin(RpcPlugin):
         if req == "loadProject" and "id" in args:
             print("Opening project {}.".format(args["id"]))
             try:
-                self.api.put(open_project=OpenProject(project_name=args["id"]))
+                self.api.put_open_project(open_project=OpenProject(project_name=args["id"]))
             except ApiException as e:
                 print(e)

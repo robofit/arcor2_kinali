@@ -1,10 +1,10 @@
-# Pose6d
+# RobotJoint
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**position** | [**Vector3**](Vector3.md) | Gets or sets position with coordinates. | [optional] 
-**rotation** | [**Quaternion**](Quaternion.md) | Gets or sets rotation in quaternion. | [optional] 
+**name** | **str** | Gets or sets name of joint. | [optional] 
+**rotation** | **float** | Gets or sets rotation of joint in radian. | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

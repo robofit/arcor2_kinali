@@ -1,10 +1,13 @@
-# Pose6d
+# Quaternion
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**position** | [**Vector3**](Vector3.md) | Gets or sets position with coordinates. | [optional] 
-**rotation** | [**Quaternion**](Quaternion.md) | Gets or sets rotation in quaternion. | [optional] 
+**x** | **float** |  | [optional] 
+**y** | **float** |  | [optional] 
+**z** | **float** |  | [optional] 
+**w** | **float** |  | [optional] 
+**is_identity** | **bool** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -27,6 +27,6 @@ services:
     environment:
       - ARCOR2_MONGO_ADDRESS=localhost:27017
     ports:
-      - "5001:5001"
+      - "5001:5001"            
 #    volumes:
 #      - C:\arcor2\arcor2:/root/arcor2/arcor2

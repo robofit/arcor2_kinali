@@ -17,7 +17,7 @@ services:
 #      - C:\arcor2\arcor2\object_types:/root/arcor2/arcor2/object_types
 #      - C:\arcor2_kinali\arcor2_kinali:/root/arcor2_kinali/arcor2_kinali
   kinali:
-    image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver:0.1.0-alpha.3
+    image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver:0.1.0-alpha.4
     container_name: kinali
     ports:
       - "5000:5000"
@@ -28,5 +28,6 @@ services:
       - ARCOR2_MONGO_ADDRESS=localhost:27017
     ports:
       - "5001:5001"
+      
 #    volumes:
 #      - C:\arcor2\arcor2:/root/arcor2/arcor2

@@ -1,0 +1,6 @@
+
+Host arcor2.github.com
+  HostName github.com
+  User git
+  IdentityFile /robofit_arcor2_deploy
+  IdentitiesOnly yes

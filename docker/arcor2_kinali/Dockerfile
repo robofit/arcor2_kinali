@@ -22,6 +22,21 @@ RUN cd ~/arcor2_kinali/arcor2_kinali \
 RUN cd ~/arcor2_kinali/swagger_client \
 	&& pip install -e .
 
+RUN cd \
+	&& git clone https://github.com/s-knibbs/dataclasses-jsonschema.git \
+	&& cd dataclasses-jsonschema \
+	&& pip install -e .
+
+RUN pip3 install --upgrade setuptools PyYAML
+
+ADD start.sh /
+
+RUN cd \
+	&& git clone https://github.com/capripot/wait-for.git \
+	&& cd wait-for \
+	&& git checkout http-tests \
+	&& cp wait-for /wait-for
+
 RUN mkdir -p ~/project
 ENV PYTHONPATH ~
 ENV ARCOR2_PROJECT_PATH ~/project

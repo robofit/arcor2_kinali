@@ -1,5 +1,6 @@
 #!/bin/bash  
 
+
 cd /root/arcor2
 git pull origin master
 cd /root/arcor2_kinali

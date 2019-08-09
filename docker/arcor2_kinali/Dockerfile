@@ -39,6 +39,6 @@ RUN cd \
 
 RUN mkdir -p ~/project
 ENV PYTHONPATH ~
-ENV ARCOR2_PROJECT_PATH ~/project
+ENV ARCOR2_PROJECT_PATH /root/project
 
 expose 6789

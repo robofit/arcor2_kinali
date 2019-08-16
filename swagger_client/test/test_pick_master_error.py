@@ -16,12 +16,12 @@ from __future__ import absolute_import
 import unittest
 
 import swagger_client
-from swagger_client.models.pose6d import Pose6d  # noqa: E501
+from swagger_client.models.pick_master_error import PickMasterError  # noqa: E501
 from swagger_client.rest import ApiException
 
 
-class TestPose6d(unittest.TestCase):
-    """Pose6d unit test stubs"""
+class TestPickMasterError(unittest.TestCase):
+    """PickMasterError unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,10 +29,10 @@ class TestPose6d(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testPose6d(self):
-        """Test Pose6d"""
+    def testPickMasterError(self):
+        """Test PickMasterError"""
         # FIXME: construct object with mandatory attributes with example values
-        # model = swagger_client.models.pose6d.Pose6d()  # noqa: E501
+        # model = swagger_client.models.pick_master_error.PickMasterError()  # noqa: E501
         pass
 
 

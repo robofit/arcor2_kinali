@@ -99,7 +99,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **put_joints**
-> put_joints(move_joint=move_joint)
+> put_joints(robot_joints=robot_joints)
 
 Moves robot to specific joints rotation.
 
@@ -113,11 +113,11 @@ from pprint import pprint
 
 # create an instance of the API class
 api_instance = swagger_client.RobotApi()
-move_joint = swagger_client.RobotJoints() # RobotJoints | Target joints. (optional)
+robot_joints = swagger_client.RobotJoints() # RobotJoints | Target joints. (optional)
 
 try:
     # Moves robot to specific joints rotation.
-    api_instance.put_joints(move_joint=move_joint)
+    api_instance.put_joints(robot_joints=robot_joints)
 except ApiException as e:
     print("Exception when calling RobotApi->put_joints: %s\n" % e)
 ```
@@ -126,7 +126,7 @@ except ApiException as e:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **move_joint** | [**RobotJoints**](RobotJoints.md)| Target joints. | [optional] 
+ **robot_joints** | [**RobotJoints**](RobotJoints.md)| Target joints. | [optional] 
 
 ### Return type
 
@@ -139,7 +139,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json-patch+json, application/json, text/json, application/*+json
- - **Accept**: Not defined
+ - **Accept**: text/plain, application/json, text/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
@@ -184,7 +184,7 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json-patch+json, application/json, text/json, application/*+json
- - **Accept**: Not defined
+ - **Accept**: text/plain, application/json, text/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

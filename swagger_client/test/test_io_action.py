@@ -16,12 +16,12 @@ from __future__ import absolute_import
 import unittest
 
 import swagger_client
-from swagger_client.models.quaternion import Quaternion  # noqa: E501
+from swagger_client.models.io_action import IoAction  # noqa: E501
 from swagger_client.rest import ApiException
 
 
-class TestQuaternion(unittest.TestCase):
-    """Quaternion unit test stubs"""
+class TestIoAction(unittest.TestCase):
+    """IoAction unit test stubs"""
 
     def setUp(self):
         pass
@@ -29,10 +29,10 @@ class TestQuaternion(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def testQuaternion(self):
-        """Test Quaternion"""
+    def testIoAction(self):
+        """Test IoAction"""
         # FIXME: construct object with mandatory attributes with example values
-        # model = swagger_client.models.quaternion.Quaternion()  # noqa: E501
+        # model = swagger_client.models.io_action.IoAction()  # noqa: E501
         pass
 
 

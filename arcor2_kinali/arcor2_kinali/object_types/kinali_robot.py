@@ -4,9 +4,10 @@ import time
 from arcor2.object_types import Robot
 from arcor2.action import action
 from arcor2.data.common import ActionMetadata, ActionPoint, Pose, Position, Orientation
+from arcor2.data.object_type import MeshFocusAction
 from arcor2.exceptions import RobotException
 from swagger_client import RobotApi, ApiClient
-from swagger_client import Move, Vector3, Quaternion, Pose6d, PickMasterError
+from swagger_client import Move, Vector3, Quaternion, Pose6d, MeshFocusAction as MeshFocusActionSw
 from arcor2_kinali.conf import API_CLIENT_CONF
 from swagger_client.rest import ApiException
 
@@ -27,6 +28,21 @@ class KinaliRobot(Robot):
 
         try:
             ret: Pose6d = self.api.get_pose(end_effector=end_effector)
+        except ApiException as e:
+            # TODO how to get PickMasterError here?
+            err = json.loads(e.body)
+            raise RobotException(err["message"])
+
+        return Pose(Position(ret.position.x, ret.position.y, ret.position.z),
+                    Orientation(ret.rotation.x, ret.rotation.y, ret.rotation.z, ret.rotation.w))
+
+    def focus(self, mfa: MeshFocusAction) -> Pose:
+
+        sw_mfa = MeshFocusActionSw([Vector3(pt.x, pt.y, pt.z) for pt in mfa.mesh_focus_points],
+                                   [Vector3(pt.x, pt.y, pt.z) for pt in mfa.robot_space_points])
+
+        try:
+            ret: Pose6d = self.api.robot_get_mesh_focus(focus=sw_mfa)
         except ApiException as e:
             # TODO how to get PickMasterError here?
             err = json.loads(e.body)

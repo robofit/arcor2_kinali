@@ -16,23 +16,30 @@ from __future__ import absolute_import
 import unittest
 
 import swagger_client
-from swagger_client.api.project_api import ProjectApi  # noqa: E501
+from swagger_client.api.scripting_api import ScriptingApi  # noqa: E501
 from swagger_client.rest import ApiException
 
 
-class TestProjectApi(unittest.TestCase):
-    """ProjectApi unit test stubs"""
+class TestScriptingApi(unittest.TestCase):
+    """ScriptingApi unit test stubs"""
 
     def setUp(self):
-        self.api = swagger_client.api.project_api.ProjectApi()  # noqa: E501
+        self.api = swagger_client.api.scripting_api.ScriptingApi()  # noqa: E501
 
     def tearDown(self):
         pass
 
-    def test_put_open_project(self):
-        """Test case for put_open_project
+    def test_scripting_run_script_from_file(self):
+        """Test case for scripting_run_script_from_file
 
-        Opens the project in Pick Master.  # noqa: E501
+        Posts file script and execute.  # noqa: E501
+        """
+        pass
+
+    def test_scripting_stop(self):
+        """Test case for scripting_stop
+
+        Stop running script.  # noqa: E501
         """
         pass
 

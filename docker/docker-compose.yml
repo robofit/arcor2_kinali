@@ -2,31 +2,56 @@ version: '3'
 
 services:
   arcor:
-    build: ./arcor2_kinali
+    image: arcor2/arcor2:0.2.2
     container_name: arcor2
-    command: ["/wait-for", "http://database:5001/projects", "--","/bin/bash", "/start.sh"]
+    command: ["/wait-for", "http://pickmaster-storage:11000/projects", "--","/bin/bash", "/start.sh"]
     depends_on:
-      - database
+      - pickmaster-storage
     ports:
       - "6789:6789"
     environment:
-      - ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:5000 
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://database:5001
+      - ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:10000 
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://pickmaster-storage:11000
 #    volumes:
 #      - C:\arcor2\arcor2:/root/arcor2/arcor2
 #      - C:\arcor2\arcor2\object_types:/root/arcor2/arcor2/object_types
 #      - C:\arcor2_kinali\arcor2_kinali:/root/arcor2_kinali/arcor2_kinali
-  kinali:
-    image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver:0.1.0-alpha.4
-    container_name: kinali
+#      - C:\arcor2_kinali\swagger_client:/root/arcor2_kinali/swagger_client
+  pickmaster-restserver:
+        image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver-mock:0.1.0-alpha.8
+        container_name: "pickmaster-restserver"
+        ports:
+          - "10000-10001:10000-10001"
+        environment:
+          STORAGE_URL: pickmaster-storage:11000
+        links:
+            - pickmaster-storage
+        depends_on:
+            - pickmaster-storage
+
+  pickmaster-storage:
+    image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-storage:0.3.1
+    container_name: "pickmaster-storage"
     ports:
-      - "5000:5000"
-  database:
-    build: ./database
-    command: /bin/bash /start.sh
+      - "11000-11001:11000-11001"
     environment:
-      - ARCOR2_MONGO_ADDRESS=localhost:27017
-    ports:
-      - "5001:5001"            
-#    volumes:
-#      - C:\arcor2\arcor2:/root/arcor2/arcor2
+      MONGODB_URL: pickmaster-mongodb:27017
+    links:
+        - pickmaster-mongodb
+    depends_on:
+        - pickmaster-mongodb
+
+  pickmaster-mongodb:
+    image: mongo:4.2.0-bionic
+    container_name: "pickmaster-mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - mongodb:/data/db
+    expose:
+      - "27017"
+
+volumes:
+  mongodb:   
+

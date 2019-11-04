@@ -30,7 +30,7 @@ services:
             - pickmaster-storage
 
   pickmaster-storage:
-    image: kinalisoft/storage:0.4.0
+    image: kinalisoft/storage:0.3.1
     container_name: "pickmaster-storage"
     ports:
       - "11000-11001:11000-11001"

@@ -6,7 +6,7 @@ from setuptools import setup  # type: ignore
 setup(
     name='arcor2_kinali',
     version='0.1',
-    packages=['arcor2_kinali', 'arcor2_kinali.object_types'],
+    packages=['arcor2_kinali', 'arcor2_kinali.object_types', 'arcor2_kinali.services'],
     package_data={"arcor2_kinali": ["py.typed"]},
     url='',
     license='',
@@ -15,7 +15,6 @@ setup(
     description='',
     install_requires=[
         # 'arcor2',
-        'pymongo'
     ],
     zip_safe=False,
 )

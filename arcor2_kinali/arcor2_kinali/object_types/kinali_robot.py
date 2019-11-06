@@ -7,9 +7,10 @@ from arcor2.data.common import ActionMetadata, ActionPoint, Pose, Position, Orie
 from arcor2.data.object_type import MeshFocusAction
 from arcor2.exceptions import RobotException
 from swagger_client import RobotApi, ApiClient
-from swagger_client import Move, Vector3, Quaternion, Pose6d, MeshFocusAction as MeshFocusActionSw
+from swagger_client import Move, Vector3, Quaternion, Pose6d, MeshFocusAction as MeshFocusActionSw, OpenProject
 from arcor2_kinali.conf import API_CLIENT_CONF
 from swagger_client.rest import ApiException
+from urllib3.exceptions import MaxRetryError
 
 """
 This file is going to be auto-generated based on API specification. So far, it's handwritten.
@@ -23,6 +24,7 @@ class KinaliRobot(Robot):
         super(KinaliRobot, self).__init__(*args, **kwargs)
 
         self.api = RobotApi(ApiClient(API_CLIENT_CONF))
+        # self.api.put_open_project(open_project=OpenProject(project_name=kwargs["id"]))
 
     def get_pose(self, end_effector: str) -> Pose:
 
@@ -32,6 +34,8 @@ class KinaliRobot(Robot):
             # TODO how to get PickMasterError here?
             err = json.loads(e.body)
             raise RobotException(err["message"])
+        except MaxRetryError:
+            raise RobotException("API not available.")
 
         return Pose(Position(ret.position.x, ret.position.y, ret.position.z),
                     Orientation(ret.rotation.x, ret.rotation.y, ret.rotation.z, ret.rotation.w))
@@ -47,6 +51,8 @@ class KinaliRobot(Robot):
             # TODO how to get PickMasterError here?
             err = json.loads(e.body)
             raise RobotException(err["message"])
+        except MaxRetryError:
+            raise RobotException("API not available.")
 
         return Pose(Position(ret.position.x, ret.position.y, ret.position.z),
                     Orientation(ret.rotation.x, ret.rotation.y, ret.rotation.z, ret.rotation.w))
@@ -66,6 +72,8 @@ class KinaliRobot(Robot):
             # TODO how to get PickMasterError here?
             err = json.loads(e.body)
             raise RobotException(err["message"])
+        except MaxRetryError:
+            raise RobotException("API not available.")
 
         ts_end = time.monotonic()
         dur = ts_end - ts_start

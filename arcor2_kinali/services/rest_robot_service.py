@@ -10,6 +10,15 @@ from arcor2 import rest
 
 class RestRobotService(RobotService):
 
+    def __init__(self, configuration_id: str):
+
+        # TODO call create
+        pass
+
+    @staticmethod
+    def get_configuration_ids() -> Set[str]:
+        return {"conf1", "conf2"}
+
     def get_robot_ids(self) -> Set[str]:
         # return set(rest.get_list("/robots", str))  # get_list pracuje s JsonSchemaMixin...
         return {"robot1", "robot2"}

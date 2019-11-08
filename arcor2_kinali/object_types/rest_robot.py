@@ -1,8 +1,9 @@
 from typing import Iterator, Optional
 
 from arcor2.object_types import Robot
-from arcor2.data.common import Pose, ActionPoint
+from arcor2.data.common import Pose, ActionPoint, ActionMetadata
 from arcor2_kinali.services.rest_robot_service import RestRobotService
+from arcor2.action import action
 
 
 class RestRobot(Robot):
@@ -24,5 +25,8 @@ class RestRobot(Robot):
         for robot_id in robot_api.get_robot_ids():
             yield RestRobot(robot_api, robot_id, robot_api.get_robot_pose(robot_id))
 
+    @action
     def end_effector_move(self, end_effector_id: str, ap: ActionPoint):
         self.robot_api.end_effector_move(self.name, end_effector_id, ap)
+
+    end_effector_move.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)

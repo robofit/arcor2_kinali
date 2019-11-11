@@ -1,1 +1,0 @@
-from arcor2_kinali.object_types.kinali_robot import KinaliRobot

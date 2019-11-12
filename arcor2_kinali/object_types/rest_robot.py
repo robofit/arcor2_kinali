@@ -1,9 +1,11 @@
-from typing import Iterator, Optional
+from typing import Iterator, Optional, Set
 
 from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionPoint, ActionMetadata
 from arcor2_kinali.services.rest_robot_service import RestRobotService
 from arcor2.action import action
+
+# TODO focus
 
 
 class RestRobot(Robot):
@@ -16,8 +18,11 @@ class RestRobot(Robot):
         super(RestRobot, self).__init__(name, pose)  # TODO distinguish id and (human-readable) name?
         self.robot_api = robot_api
 
-    def get_pose(self, end_effector: str) -> Pose:
-        return self.robot_api.get_robot_pose(self.name)
+    def get_end_effectors_ids(self) -> Set[str]:
+        return self.robot_api.get_end_effectors_ids(self.name)
+
+    def get_end_effector_pose(self, end_effector: str) -> Pose:  # global pose
+        return self.robot_api.get_end_effector_pose(self.name, end_effector)
 
     @staticmethod
     def from_services(robot_api: RestRobotService) -> Iterator["RestRobot"]:

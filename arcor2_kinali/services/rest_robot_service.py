@@ -35,11 +35,13 @@ class RestRobotService(RobotService):
         return set("eeBig")
 
     def get_end_effector_pose(self, robot_id: str, end_effector_id: str) -> Pose:
-        return rest.get(f"/robots/{robot_id}/{end_effector_id}/pose", Pose)
+        return Pose()
+        # return rest.get(f"/robots/{robot_id}/{end_effector_id}/pose", Pose)
 
     @action
     def end_effector_move(self, robot_id: str, end_effector_id: str, ap: ActionPoint):
         # TODO transform AP using resources class
-        rest.put(f"/robots/{robot_id}/{end_effector_id}/move", ap.pose)  # pose: Pose, moveType: MoveType, speed: float
+        pass
+        # rest.put(f"/robots/{robot_id}/{end_effector_id}/move", ap.pose)  # pose: Pose, moveType: MoveType, speed: float
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True)

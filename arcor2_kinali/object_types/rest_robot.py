@@ -5,6 +5,7 @@ from arcor2.data.common import Pose, ActionPoint, ActionMetadata
 from arcor2_kinali.services.rest_robot_service import RestRobotService
 from arcor2.action import action
 
+from arcor2_kinali.data.common import MoveTypeEnum
 # TODO focus
 
 
@@ -31,7 +32,9 @@ class RestRobot(Robot):
             yield RestRobot(robot_api, robot_id, robot_api.get_robot_pose(robot_id))
 
     @action
-    def end_effector_move(self, end_effector_id: str, ap: ActionPoint):
-        self.robot_api.end_effector_move(self.name, end_effector_id, ap)
+    def end_effector_move(self, end_effector_id: str, ap: ActionPoint, speed: float) -> None:
+
+        move_type = MoveTypeEnum.AVOID_COLLISIONS
+        self.robot_api.end_effector_move(self.name, end_effector_id, ap, move_type, speed)
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)

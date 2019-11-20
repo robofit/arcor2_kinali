@@ -5,6 +5,9 @@ from arcor2.data.common import Pose, ActionMetadata, ActionPoint, Position, Orie
 from arcor2.action import action
 from arcor2 import rest
 
+from arcor2_kinali.data.common import MoveTypeEnum
+
+# TODO mixin for kinali services?
 # TODO handle rest exceptions
 
 
@@ -12,36 +15,32 @@ class RestRobotService(RobotService):
 
     def __init__(self, configuration_id: str):
 
-        # TODO call create
-        pass
+        super(RestRobotService, self).__init__(configuration_id)
+        rest.put(f"/systems/{self.configuration_id}/create")  # TODO make this shared for all REST services (mixin?)
 
     @staticmethod
     def get_configuration_ids() -> Set[str]:
-        return {"conf1", "conf2"}
+        return set(rest.get_data("/systems"))
 
     def get_robot_ids(self) -> Set[str]:
-        # return set(rest.get_list("/robots", str))  # get_list pracuje s JsonSchemaMixin...
-        return {"robot1", "robot2"}
+        return set(rest.get_data("/robots"))
 
     def get_robot_pose(self, robot_id: str) -> Pose:
-        # return rest.get(f"/robots/{robot_id}/pose", Pose)
-        return Pose(Position(0, 0, 0), Orientation(0, 0, 0, 1))
+        return rest.get(f"/robots/{robot_id}/pose", Pose)
 
     def stop(self, robot_id: str) -> None:
-
         rest.put(f"/robots/{robot_id}/stop")
 
     def get_end_effectors_ids(self, robot_id: str) -> Set[str]:
-        return set("eeBig")
+        return set(rest.get_data(f"/robots/{robot_id}/endeffectors"))
 
     def get_end_effector_pose(self, robot_id: str, end_effector_id: str) -> Pose:
-        return Pose()
-        # return rest.get(f"/robots/{robot_id}/{end_effector_id}/pose", Pose)
+        return rest.get(f"/robots/{robot_id}/{end_effector_id}/pose", Pose)
 
     @action
-    def end_effector_move(self, robot_id: str, end_effector_id: str, ap: ActionPoint):
-        # TODO transform AP using resources class
-        pass
-        # rest.put(f"/robots/{robot_id}/{end_effector_id}/move", ap.pose)  # pose: Pose, moveType: MoveType, speed: float
+    def end_effector_move(self, robot_id: str, end_effector_id: str, ap: ActionPoint, speed: float) -> None:
+
+        move_type = MoveTypeEnum.AVOID_COLLISIONS
+        rest.put(f"/robots/{robot_id}/{end_effector_id}/move?moveType={move_type.value}&speed={speed}", ap.pose)
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True)

@@ -20,10 +20,10 @@ class RestRobot(Robot):
         self.robot_api = robot_api
 
     def get_end_effectors_ids(self) -> Set[str]:
-        return self.robot_api.get_end_effectors_ids(self.name)
+        return self.robot_api.get_end_effectors_ids(self.id)
 
     def get_end_effector_pose(self, end_effector: str) -> Pose:  # global pose
-        return self.robot_api.get_end_effector_pose(self.name, end_effector)
+        return self.robot_api.get_end_effector_pose(self.id, end_effector)
 
     @staticmethod
     def from_services(robot_api: RestRobotService) -> Iterator["RestRobot"]:
@@ -35,6 +35,6 @@ class RestRobot(Robot):
     def end_effector_move(self, end_effector_id: str, ap: ActionPoint, speed: float) -> None:
 
         move_type = MoveTypeEnum.AVOID_COLLISIONS
-        self.robot_api.end_effector_move(self.name, end_effector_id, ap, move_type, speed)
+        self.robot_api.end_effector_move(self.id, end_effector_id, ap, move_type, speed)
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)

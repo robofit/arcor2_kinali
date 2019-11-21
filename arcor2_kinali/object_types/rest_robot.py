@@ -4,6 +4,7 @@ from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionPoint, ActionMetadata
 from arcor2_kinali.services.rest_robot_service import RestRobotService
 from arcor2.action import action
+from arcor2.exceptions import Arcor2Exception
 
 from arcor2_kinali.data.common import MoveTypeEnum
 # TODO focus
@@ -28,8 +29,12 @@ class RestRobot(Robot):
     @staticmethod
     def from_services(robot_api: RestRobotService) -> Iterator["RestRobot"]:
 
+        # TODO what if robot does not support get_robot_pose?
         for robot_id in robot_api.get_robot_ids():
-            yield RestRobot(robot_api, robot_id, robot_api.get_robot_pose(robot_id))
+            try:
+                yield RestRobot(robot_api, robot_id, robot_api.get_robot_pose(robot_id))
+            except Arcor2Exception as e:
+                print(e)
 
     @action
     def end_effector_move(self, end_effector_id: str, ap: ActionPoint, speed: float) -> None:

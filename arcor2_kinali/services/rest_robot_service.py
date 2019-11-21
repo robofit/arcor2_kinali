@@ -1,10 +1,13 @@
 from typing import Set
 import os
+import copy
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, ActionPoint, Position, Orientation
+from arcor2.data.common import Pose, ActionMetadata, ActionPoint
 from arcor2.action import action
 from arcor2 import rest
+from arcor2.object_types import Generic
+from arcor2.data.object_type import ModelTypeEnum
 
 from arcor2_kinali.data.common import MoveTypeEnum
 
@@ -12,6 +15,9 @@ from arcor2_kinali.data.common import MoveTypeEnum
 # TODO handle rest exceptions
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:10000")
+
+def collision_id(obj: Generic) -> str:
+    return obj.collision_model.type().value + "-" + obj.id
 
 
 class RestRobotService(RobotService):
@@ -25,6 +31,16 @@ class RestRobotService(RobotService):
     def get_configuration_ids() -> Set[str]:
         # return set(rest.get_data(f"{URL}/systems"))
         return {"conf1", "conf2"}
+
+    def add_collision(self, obj: Generic) -> None:
+        assert obj.collision_model and obj.collision_model.type() != ModelTypeEnum.NONE
+        params = copy.deepcopy(obj.collision_model.__dict__)
+        params["id"] = collision_id(obj)
+        # rest.put(f"{URL}/collisions/{obj.collision_model.type()}", obj.pose, params)
+
+    def remove_collision(self, obj: Generic) -> None:
+        assert obj.collision_model and obj.collision_model.type() != ModelTypeEnum.NONE
+        # rest.delete(f"{URL}/collisions/{collision_id(obj)}")
 
     def get_robot_ids(self) -> Set[str]:
         # return set(rest.get_data(f"{URL}/robots"))

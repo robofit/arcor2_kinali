@@ -16,6 +16,7 @@ from arcor2_kinali.data.common import MoveTypeEnum
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
 
+
 def collision_id(obj: Generic) -> str:
     return obj.collision_model.type().value + "-" + obj.id
 
@@ -33,7 +34,7 @@ class RestRobotService(RobotService):
 
     def add_collision(self, obj: Generic) -> None:
         assert obj.collision_model and obj.collision_model.type() != ModelTypeEnum.NONE
-        params = copy.deepcopy(obj.collision_model.__dict__)
+        params = obj.collision_model.to_dict()
         params["id"] = collision_id(obj)
         rest.put(f"{URL}/collisions/{obj.collision_model.type().value}", obj.pose, params)
 

@@ -14,7 +14,7 @@ setup(
     author_email='imaterna@fit.vutbr.cz',
     description='',
     install_requires=[
-        # 'arcor2',
+        'fastcache'
     ],
     zip_safe=False,
 )

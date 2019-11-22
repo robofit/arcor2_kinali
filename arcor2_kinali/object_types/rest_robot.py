@@ -2,6 +2,7 @@ from typing import Iterator, Optional, Set
 
 from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionPoint, ActionMetadata
+from arcor2.data.object_type import MeshFocusAction
 from arcor2_kinali.services.rest_robot_service import RestRobotService
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
@@ -12,10 +13,7 @@ from arcor2_kinali.data.common import MoveTypeEnum
 
 class RestRobot(Robot):
 
-    def __init__(self,
-                 robot_api: RestRobotService,
-                 name: Optional[str] = None,
-                 pose: Optional[Pose] = None) -> None:
+    def __init__(self, robot_api: RestRobotService, name: str, pose: Pose) -> None:
 
         super(RestRobot, self).__init__(name, pose)  # TODO distinguish id and (human-readable) name?
         self.robot_api = robot_api
@@ -41,5 +39,8 @@ class RestRobot(Robot):
 
         move_type = MoveTypeEnum.AVOID_COLLISIONS
         self.robot_api.end_effector_move(self.id, end_effector_id, ap, move_type, speed)
+
+    def focus(self, mfa: MeshFocusAction) -> Pose:
+        return self.robot_api.focus(mfa)
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)

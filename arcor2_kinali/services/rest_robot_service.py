@@ -30,13 +30,6 @@ class RestRobotService(RobotService):
 
         self._robot_ids: Optional[Set[str]] = None
 
-        self.params = {"robot_id": (self.get_robot_ids, set()),
-                       "end_effector_id": (self.get_end_effectors_ids, {"robot_id"}),
-                       "gripper_id": (self.grippers, {"robot_id"}),
-                       "suction_id": (self.grippers, {"robot_id"}),
-                       "input_id": (self.inputs, {"robot_id"}),
-                       "output_id": (self.outputs, {"robot_id"})}
-
     @staticmethod
     def get_configuration_ids() -> Set[str]:
         return set(rest.get_data(f"{URL}/systems"))
@@ -148,3 +141,13 @@ class RestRobotService(RobotService):
     suctions_suck.__action__ = ActionMetadata(free=True, blocking=True)
     suctions_release.__action__ = ActionMetadata(free=True, blocking=True)
     suctions_attached.__action__ = ActionMetadata(free=True, blocking=True)
+
+
+RestRobotService.DYNAMIC_PARAMS = {
+    "robot_id": (RestRobotService.get_robot_ids, set()),
+    "end_effector_id": (RestRobotService.get_end_effectors_ids, {"robot_id"}),
+    "gripper_id": (RestRobotService.grippers, {"robot_id"}),
+    "suction_id": (RestRobotService.suctions, {"robot_id"}),
+    "input_id": (RestRobotService.inputs, {"robot_id"}),
+    "output_id": (RestRobotService.outputs, {"robot_id"})
+}

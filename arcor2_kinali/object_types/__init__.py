@@ -1,1 +1,1 @@
-from object_types.rest_robot import RestRobot
+from arcor2_kinali.object_types.rest_robot import RestRobot

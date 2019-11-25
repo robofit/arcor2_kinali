@@ -3,11 +3,10 @@ from typing import Iterator, Optional, Set
 from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionPoint, ActionMetadata
 from arcor2.data.object_type import MeshFocusAction
-from arcor2_kinali.services.rest_robot_service import RestRobotService
+from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum  # TODO relative import (to make it work in execution package)
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 
-from arcor2_kinali.data.common import MoveTypeEnum
 # TODO focus
 
 

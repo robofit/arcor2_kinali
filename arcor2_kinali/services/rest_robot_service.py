@@ -1,5 +1,6 @@
 from typing import Set, Optional, List
 import os
+
 from fastcache import clru_cache
 
 from arcor2.services import RobotService
@@ -8,8 +9,8 @@ from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
 from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
+from arcor2.data.common import StrEnum
 
-from arcor2_kinali.data.common import MoveTypeEnum
 
 # TODO mixin for kinali services?
 # TODO handle rest exceptions
@@ -19,6 +20,13 @@ URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
 
 def collision_id(obj: Generic) -> str:
     return obj.collision_model.type().value + "-" + obj.id
+
+
+class MoveTypeEnum(StrEnum):
+
+    AVOID_COLLISIONS: str = "AvoidCollisions"
+    LINE: str = "Line"
+    SIMPLE: str = "Simple"
 
 
 class RestRobotService(RobotService):
@@ -70,9 +78,9 @@ class RestRobotService(RobotService):
         return rest.get(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/pose", Pose)
 
     @action
-    def end_effector_move(self, robot_id: str, end_effector_id: str, ap: ActionPoint, speed: float) -> None:
+    def end_effector_move(self, robot_id: str, end_effector_id: str, ap: ActionPoint, move_type: MoveTypeEnum,
+                          speed: float) -> None:
 
-        move_type = MoveTypeEnum.AVOID_COLLISIONS
         rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", ap.pose,
                  {"moveType": move_type.value, "speed": speed})
 

@@ -1,8 +1,8 @@
-from typing import Iterator, Set
+from typing import Iterator, Set, Optional
 
 from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionMetadata
-from arcor2.data.object_type import MeshFocusAction
+from arcor2.data.object_type import MeshFocusAction, Models
 # TODO relative import (to make it work in execution package)
 from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum
 from arcor2.action import action
@@ -13,9 +13,10 @@ from arcor2.exceptions import Arcor2Exception
 
 class RestRobot(Robot):
 
-    def __init__(self, robot_api: RestRobotService, name: str, pose: Pose) -> None:
+    def __init__(self, robot_api: RestRobotService, obj_id: str, pose: Pose,
+                 collision_model: Optional[Models] = None) -> None:
 
-        super(RestRobot, self).__init__(name, pose)  # TODO distinguish id and (human-readable) name?
+        super(RestRobot, self).__init__(obj_id, pose, collision_model)
         self.robot_api = robot_api
 
     def get_end_effectors_ids(self) -> Set[str]:

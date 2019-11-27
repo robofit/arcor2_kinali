@@ -1,9 +1,10 @@
-from typing import Iterator, Optional, Set
+from typing import Iterator, Set
 
 from arcor2.object_types import Robot
-from arcor2.data.common import Pose, ActionPoint, ActionMetadata
+from arcor2.data.common import Pose, ActionMetadata
 from arcor2.data.object_type import MeshFocusAction
-from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum  # TODO relative import (to make it work in execution package)
+# TODO relative import (to make it work in execution package)
+from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 
@@ -34,10 +35,10 @@ class RestRobot(Robot):
                 print(e)
 
     @action
-    def end_effector_move(self, end_effector_id: str, ap: ActionPoint, speed: float) -> None:
+    def end_effector_move(self, end_effector_id: str, pose: Pose, speed: float) -> None:
 
         move_type = MoveTypeEnum.AVOID_COLLISIONS
-        self.robot_api.end_effector_move(self.id, end_effector_id, ap, move_type, speed)
+        self.robot_api.end_effector_move(self.id, end_effector_id, pose, move_type, speed)
 
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return self.robot_api.focus(mfa)

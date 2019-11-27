@@ -1,24 +1,23 @@
 from typing import Set, Optional, List
 import os
 
-from fastcache import clru_cache
+from fastcache import clru_cache  # type: ignore
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, ActionPoint, Joint
+from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint
 from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
 from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
 from arcor2.data.common import StrEnum
 
-
-# TODO mixin for kinali services?
 # TODO handle rest exceptions
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
 
 
 def collision_id(obj: Generic) -> str:
+    assert obj.collision_model is not None
     return obj.collision_model.type().value + "-" + obj.id
 
 
@@ -34,7 +33,8 @@ class RestRobotService(RobotService):
     def __init__(self, configuration_id: str):
 
         super(RestRobotService, self).__init__(configuration_id)
-        rest.put(f"{URL}/systems/{self.configuration_id}/create")  # TODO make this shared for all REST services (mixin?)
+        # TODO make this shared for all REST services (mixin?)
+        rest.put(f"{URL}/systems/{self.configuration_id}/create")
 
         self._robot_ids: Optional[Set[str]] = None
 
@@ -78,11 +78,17 @@ class RestRobotService(RobotService):
         return rest.get(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/pose", Pose)
 
     @action
-    def end_effector_move(self, robot_id: str, end_effector_id: str, ap: ActionPoint, move_type: MoveTypeEnum,
+    def end_effector_move(self, robot_id: str, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum,
                           speed: float) -> None:
 
-        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", ap.pose,
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", pose,
                  {"moveType": move_type.value, "speed": speed})
+
+    @action
+    def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float) -> None:
+
+        assert robot_id == joints.robot_id
+        rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
     @clru_cache(maxsize=None)
     def inputs(self, robot_id: str) -> Set[str]:
@@ -141,6 +147,7 @@ class RestRobotService(RobotService):
         return rest.get_bool(f"{URL}/robots/{robot_id}/suctions/{suction_id}/attached")
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True)
+    set_joints.__action__ = ActionMetadata(free=True, blocking=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True)
     gripper_grip.__action__ = ActionMetadata(free=True, blocking=True)

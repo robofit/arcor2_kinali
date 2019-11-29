@@ -12,6 +12,9 @@ from arcor2.exceptions import Arcor2Exception
 
 
 class RestRobot(Robot):
+    """
+    REST interface to the robot.
+    """
 
     def __init__(self, robot_api: RestRobotService, obj_id: str, pose: Pose,
                  collision_model: Optional[Models] = None) -> None:

@@ -29,6 +29,9 @@ class MoveTypeEnum(StrEnum):
 
 
 class RestRobotService(RobotService):
+    """
+    REST interface to the robot service.
+    """
 
     def __init__(self, configuration_id: str):
 
@@ -80,6 +83,15 @@ class RestRobotService(RobotService):
     @action
     def end_effector_move(self, robot_id: str, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum,
                           speed: float) -> None:
+        """
+        Moves the robot's end-effector to a specific pose.
+        :param robot_id: Unique robot id.
+        :param end_effector_id: Unique end-effector id.
+        :param pose: Target pose.
+        :param move_type: Type of move.
+        :param speed: Speed of move.
+        :return:
+        """
 
         rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", pose,
                  {"moveType": move_type.value, "speed": speed})

@@ -4,7 +4,7 @@ import os
 from fastcache import clru_cache  # type: ignore
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint
+from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, RelativePose
 from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
@@ -97,6 +97,22 @@ class RestRobotService(RobotService):
                  {"moveType": move_type.value, "speed": speed})
 
     @action
+    def end_effector_move_relative(self, robot_id: str, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
+                                   move_type: MoveTypeEnum, speed: float) -> None:
+        """
+        Moves the robot's end-effector to a specific pose.
+        :param robot_id: Unique robot id.
+        :param end_effector_id: Unique end-effector id.
+        :param pose: Target pose.
+        :param rel_pose: Relative pose.
+        :param move_type: Type of move.
+        :param speed: Speed of move.
+        :return:
+        """
+
+        pass
+
+    @action
     def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float) -> None:
 
         assert robot_id == joints.robot_id
@@ -159,6 +175,7 @@ class RestRobotService(RobotService):
         return rest.get_bool(f"{URL}/robots/{robot_id}/suctions/{suction_id}/attached")
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True)
+    end_effector_move_relative.__action__ = ActionMetadata(free=True, blocking=True)
     set_joints.__action__ = ActionMetadata(free=True, blocking=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True)

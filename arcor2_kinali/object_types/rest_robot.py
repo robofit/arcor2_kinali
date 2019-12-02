@@ -8,8 +8,6 @@ from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveType
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 
-# TODO focus
-
 
 class RestRobot(Robot):
     """
@@ -25,8 +23,8 @@ class RestRobot(Robot):
     def get_end_effectors_ids(self) -> Set[str]:
         return self.robot_api.get_end_effectors_ids(self.id)
 
-    def get_end_effector_pose(self, end_effector: str) -> Pose:  # global pose
-        return self.robot_api.get_end_effector_pose(self.id, end_effector)
+    def get_end_effector_pose(self, end_effector_id: str) -> Pose:  # global pose
+        return self.robot_api.get_end_effector_pose(self.id, end_effector_id)
 
     @staticmethod
     def from_services(robot_api: RestRobotService) -> Iterator["RestRobot"]:
@@ -48,3 +46,12 @@ class RestRobot(Robot):
         return self.robot_api.focus(mfa)
 
     end_effector_move.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
+
+
+RestRobot.DYNAMIC_PARAMS = {
+    "end_effector_id": (RestRobot.get_end_effectors_ids.__name__, set())
+    # "gripper_id": (RestRobotService.grippers, {"robot_id"}),
+    # "suction_id": (RestRobotService.suctions, {"robot_id"}),
+    # "input_id": (RestRobotService.inputs, {"robot_id"}),
+    # "output_id": (RestRobotService.outputs, {"robot_id"})
+}

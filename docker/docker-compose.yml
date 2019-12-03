@@ -15,7 +15,7 @@ services:
       - REST_ROBOT_SERVICE_URL=http://kinali:13000 
       - ARCOR2_PERSISTENT_STORAGE_URL=http://pickmaster-storage:11000
   pickmaster-restserver:
-        image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-beta.1
+        image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-rc.1
         container_name: "kinali"
         ports:
           - "13000-13001:13000-13001"
@@ -27,7 +27,7 @@ services:
             - pickmaster-storage
 
   pickmaster-storage:
-    image: kinalisoft/storage:0.5.0
+    image: kinalisoft/storage:0.6.1
     container_name: "pickmaster-storage"
     ports:
       - "11000-11001:11000-11001"

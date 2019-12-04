@@ -1,8 +1,6 @@
 from typing import Set, Optional, List
 import os
 
-from fastcache import clru_cache  # type: ignore
-
 from arcor2.services import RobotService
 from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, RelativePose
 from arcor2.action import action
@@ -63,7 +61,6 @@ class RestRobotService(RobotService):
             self._robot_ids = set(rest.get_data(f"{URL}/robots"))
         return self._robot_ids
 
-    @clru_cache(maxsize=None)
     def get_robot_pose(self, robot_id: str) -> Pose:
         return rest.get(f"{URL}/robots/{robot_id}/pose", Pose)
 
@@ -73,7 +70,6 @@ class RestRobotService(RobotService):
     def robot_joints(self, robot_id: str) -> List[Joint]:
         return rest.get_list(f"{URL}/robots/{robot_id}/joints", Joint)
 
-    @clru_cache(maxsize=None)
     def get_end_effectors_ids(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/endeffectors"))
 
@@ -118,11 +114,9 @@ class RestRobotService(RobotService):
         assert robot_id == joints.robot_id
         rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
-    @clru_cache(maxsize=None)
     def inputs(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/inputs"))
 
-    @clru_cache(maxsize=None)
     def outputs(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/outputs"))
 
@@ -137,9 +131,8 @@ class RestRobotService(RobotService):
         rest.put(f"{URL}/robots/{robot_id}/outputs/{output_id}", params={"value": value})
 
     def focus(self, mfa: MeshFocusAction) -> Pose:
-        return rest.get(f"{URL}/utils/focus", Pose)
+        return rest.put(f"{URL}/utils/focus", mfa, data_cls=Pose)
 
-    @clru_cache(maxsize=None)
     def grippers(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
@@ -158,7 +151,6 @@ class RestRobotService(RobotService):
     def gripper_gripped(self, robot_id: str, gripper_id: str) -> bool:
         return rest.get_bool(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped")
 
-    @clru_cache(maxsize=None)
     def suctions(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
 

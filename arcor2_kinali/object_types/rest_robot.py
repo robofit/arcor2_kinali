@@ -86,7 +86,7 @@ class RestRobot(Robot):
         return self.robot_api.inputs(self.id)
 
     def outputs(self, robot_id: str) -> Set[str]:
-        return self.robot_api.outputs()
+        return self.robot_api.outputs(self.id)
 
     @action
     def get_input(self, input_id: str) -> float:

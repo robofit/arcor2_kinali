@@ -2,18 +2,24 @@ version: '3'
 
 services:
   arcor:
-    image: arcor2_kinali:0.1.0
-     
+    image: arcor2_kinali:latest     
     container_name: arcor2
-    command: ["/wait-for", "http://pickmaster-storage:11000/projects", "--","/bin/bash", "/start.sh"]
-    #command: tail -F anything 
     depends_on:
       - pickmaster-storage
     ports:
       - "6789:6789"
     environment:
       - REST_ROBOT_SERVICE_URL=http://kinali:13000 
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://pickmaster-storage:11000
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://pickmaster-storage:11000            
+      - ARCOR2_EXECUTION_URL=ws://arcor2_execution:6790
+  arcor2_build:
+    image: arcor2_build:latest
+    container_name: arcor2_build
+  arcor2_execution:
+    image: arcor2_execution:latest
+    container_name: arcor2_execution
+    environment:
+      - ARCOR2_BUILDER_URL=http://arcor2_build:5007
   pickmaster-restserver:
         image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-rc.1
         container_name: "kinali"

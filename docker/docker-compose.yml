@@ -1,49 +1,54 @@
 version: '3'
 
 services:
-  arcor:
-    image: arcor2/arcor2:0.2.2
-    container_name: arcor2
-    command: ["/wait-for", "http://pickmaster-storage:11000/projects", "--","/bin/bash", "/start.sh"]
+  arserver:
+    image: arcor2/arcor2_kinali    
+    container_name: arserver
     depends_on:
-      - pickmaster-storage
+      - project
+      - build
+      - execution
+      - robot
     ports:
       - "6789:6789"
     environment:
-      - ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:10000 
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://pickmaster-storage:11000
-#    volumes:
-#      - C:\arcor2\arcor2:/root/arcor2/arcor2
-#      - C:\arcor2\arcor2\object_types:/root/arcor2/arcor2/object_types
-#      - C:\arcor2_kinali\arcor2_kinali:/root/arcor2_kinali/arcor2_kinali
-#      - C:\arcor2_kinali\swagger_client:/root/arcor2_kinali/swagger_client
-  pickmaster-restserver:
-        image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver-mock:0.1.0-alpha.8
-        container_name: "pickmaster-restserver"
+      - REST_ROBOT_SERVICE_URL=http://robot:13000 
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000            
+      - ARCOR2_EXECUTION_URL=ws://execution:6790
+  build:
+    image: arcor2/arcor2_build
+    container_name: build
+  execution:
+    image: arcor2/arcor2_execution
+    container_name: execution
+    environment:
+      - ARCOR2_BUILDER_URL=http://build:5007
+  robot:
+        image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-rc.1
+        container_name: "robot"
         ports:
-          - "10000-10001:10000-10001"
+          - "13000-13001:13000-13001"
         environment:
-          STORAGE_URL: pickmaster-storage:11000
+          STORAGE_URL: project:11000
         links:
-            - pickmaster-storage
+            - project
         depends_on:
-            - pickmaster-storage
-
-  pickmaster-storage:
-    image: kinalisoft/storage:0.3.1
-    container_name: "pickmaster-storage"
+            - project
+  project:
+    image: kinalisoft/storage:0.6.1
+    container_name: "project"
     ports:
       - "11000-11001:11000-11001"
     environment:
-      MONGODB_URL: pickmaster-mongodb:27017
+      MONGODB_URL: mongodb:27017
     links:
-        - pickmaster-mongodb
+        - mongodb
     depends_on:
-        - pickmaster-mongodb
+        - mongodb
 
-  pickmaster-mongodb:
+  mongodb:
     image: mongo:4.2.0-bionic
-    container_name: "pickmaster-mongodb"
+    container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null
@@ -54,4 +59,5 @@ services:
 
 volumes:
   mongodb:   
+
 

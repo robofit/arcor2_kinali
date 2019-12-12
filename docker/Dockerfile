@@ -1,4 +1,4 @@
-FROM arcor2/arcor2_base
+FROM arcor2/arcor2_base:0.1.1
 
 COPY . /root/arcor2_kinali
 

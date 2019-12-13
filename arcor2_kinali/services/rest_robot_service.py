@@ -48,6 +48,14 @@ class RestRobotService(RobotService):
             return
         params = obj.collision_model.to_dict()
         params["id"] = collision_id(obj)
+
+        # TODO temporary hack
+        if obj.collision_model.type() == ModelTypeEnum.MESH:
+            params["mesh_scale_x"] = 1.0
+            params["mesh_scale_y"] = 1.0
+            params["mesh_scale_z"] = 1.0
+            params["transform_id"] = "world"
+
         rest.put(f"{URL}/collisions/{obj.collision_model.type().value}", obj.pose, params)
 
     def remove_collision(self, obj: Generic) -> None:

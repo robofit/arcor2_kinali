@@ -1,13 +1,15 @@
 from typing import Set, Optional, List
 import os
+from dataclasses import dataclass
+
+from dataclasses_jsonschema import JsonSchemaMixin
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, RelativePose
+from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, RelativePose, StrEnum, Position, Orientation
 from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
 from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
-from arcor2.data.common import StrEnum
 
 # TODO handle rest exceptions
 
@@ -24,6 +26,22 @@ class MoveTypeEnum(StrEnum):
     AVOID_COLLISIONS: str = "AvoidCollisions"
     LINE: str = "Line"
     SIMPLE: str = "Simple"
+
+
+@dataclass
+class MoveRelativeParameters(JsonSchemaMixin):
+
+    pose: Pose
+    position: Position  # relative position
+    orientation: Orientation  # relative orientation
+
+
+@dataclass
+class MoveRelativeJointsParameters(JsonSchemaMixin):
+
+    joints: List[Joint]
+    position: Position  # relative position
+    orientation: Orientation  # relative orientation
 
 
 class RestRobotService(RobotService):
@@ -48,6 +66,14 @@ class RestRobotService(RobotService):
             return
         params = obj.collision_model.to_dict()
         params["id"] = collision_id(obj)
+
+        # TODO temporary hack
+        if obj.collision_model.type() == ModelTypeEnum.MESH:
+            params["mesh_scale_x"] = 1.0
+            params["mesh_scale_y"] = 1.0
+            params["mesh_scale_z"] = 1.0
+            params["transform_id"] = "world"
+
         rest.put(f"{URL}/collisions/{obj.collision_model.type().value}", obj.pose, params)
 
     def remove_collision(self, obj: Generic) -> None:
@@ -77,8 +103,7 @@ class RestRobotService(RobotService):
         return rest.get(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/pose", Pose)
 
     @action
-    def end_effector_move(self, robot_id: str, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum,
-                          speed: float) -> None:
+    def move(self, robot_id: str, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum, speed: float) -> None:
         """
         Moves the robot's end-effector to a specific pose.
         :param robot_id: Unique robot id.
@@ -93,8 +118,8 @@ class RestRobotService(RobotService):
                  {"moveType": move_type.value, "speed": speed})
 
     @action
-    def end_effector_move_relative(self, robot_id: str, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
-                                   move_type: MoveTypeEnum, speed: float) -> None:
+    def move_relative(self, robot_id: str, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
+                      move_type: MoveTypeEnum, speed: float) -> None:
         """
         Moves the robot's end-effector to a specific pose.
         :param robot_id: Unique robot id.
@@ -106,7 +131,27 @@ class RestRobotService(RobotService):
         :return:
         """
 
-        pass
+        body = MoveRelativeParameters(pose, rel_pose.position, rel_pose.orientation)
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative", body,
+                 {"moveType": move_type.value, "speed": speed})
+
+    @action
+    def move_relative_joints(self, robot_id: str, end_effector_id: str, joints: RobotJoints,
+                             rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float) -> None:
+        """
+        Moves the robot's end-effector relatively to specific joint values.
+        :param robot_id: Unique robot id.
+        :param end_effector_id: Unique end-effector id.
+        :param joints: Target joints.
+        :param rel_pose: Relative pose.
+        :param move_type: Type of move.
+        :param speed: Speed of move.
+        :return:
+        """
+
+        body = MoveRelativeJointsParameters(joints.joints, rel_pose.position, rel_pose.orientation)
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative_joints", body,
+                 {"moveType": move_type.value, "speed": speed})
 
     @action
     def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float) -> None:
@@ -137,46 +182,46 @@ class RestRobotService(RobotService):
         return set(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
     @action
-    def gripper_grip(self, robot_id: str, gripper_id: str, position: float, speed: float, force: float) -> None:
+    def grip(self, robot_id: str, gripper_id: str, position: float, speed: float, force: float) -> None:
         rest.put(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/grip", params={"position": position,
                                                                                 "speed": speed,
                                                                                 "force": force})
 
     @action
-    def gripper_opening(self, robot_id: str, gripper_id: str, position: float, speed: float) -> None:
+    def set_opening(self, robot_id: str, gripper_id: str, position: float, speed: float) -> None:
         rest.put(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/opening", params={"position": position,
                                                                                    "speed": speed})
 
     @action
-    def gripper_gripped(self, robot_id: str, gripper_id: str) -> bool:
+    def is_item_gripped(self, robot_id: str, gripper_id: str) -> bool:
         return rest.get_bool(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped")
 
     def suctions(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
 
     @action
-    def suctions_suck(self, robot_id: str, suction_id: str) -> None:
+    def suck(self, robot_id: str, suction_id: str) -> None:
         rest.put(f"{URL}/robots/{robot_id}/suctions/{suction_id}/suck")
 
     @action
-    def suctions_release(self, robot_id: str, suction_id: str) -> None:
+    def release(self, robot_id: str, suction_id: str) -> None:
         rest.put(f"{URL}/robots/{robot_id}/suctions/{suction_id}/release")
 
     @action
-    def suctions_attached(self, robot_id: str, suction_id: str) -> bool:
+    def is_item_attached(self, robot_id: str, suction_id: str) -> bool:
         return rest.get_bool(f"{URL}/robots/{robot_id}/suctions/{suction_id}/attached")
 
-    end_effector_move.__action__ = ActionMetadata(free=True, blocking=True)
-    end_effector_move_relative.__action__ = ActionMetadata(free=True, blocking=True)
+    move.__action__ = ActionMetadata(free=True, blocking=True)
+    move_relative.__action__ = ActionMetadata(free=True, blocking=True)
     set_joints.__action__ = ActionMetadata(free=True, blocking=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True)
-    gripper_grip.__action__ = ActionMetadata(free=True, blocking=True)
-    gripper_opening.__action__ = ActionMetadata(free=True, blocking=True)
-    gripper_gripped.__action__ = ActionMetadata(free=True, blocking=True)
-    suctions_suck.__action__ = ActionMetadata(free=True, blocking=True)
-    suctions_release.__action__ = ActionMetadata(free=True, blocking=True)
-    suctions_attached.__action__ = ActionMetadata(free=True, blocking=True)
+    grip.__action__ = ActionMetadata(free=True, blocking=True)
+    set_opening.__action__ = ActionMetadata(free=True, blocking=True)
+    is_item_gripped.__action__ = ActionMetadata(free=True, blocking=True)
+    suck.__action__ = ActionMetadata(free=True, blocking=True)
+    release.__action__ = ActionMetadata(free=True, blocking=True)
+    is_item_attached.__action__ = ActionMetadata(free=True, blocking=True)
 
 
 RestRobotService.DYNAMIC_PARAMS = {

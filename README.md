@@ -1,4 +1,5 @@
 
+
 ## Running in docker:
 
 ### Prerequisites:
@@ -29,13 +30,15 @@
 ### Run system (stable version)
 ```bash
 cd docker
-docker-compose up
+export ARCOR2_VERSION=\$(cat ../arcor2/VERSION)
+sudo -E docker-compose up
 ```
 
 ### Run newest build
 ```bash
 cd docker
-docker-compose -f docker-compose.yml -f docker-compose.devel.yml up
+export ARCOR2_VERSION=latest
+sudo -E docker-compose up
 ```
 
 ## Installation (for development without docker):
@@ -51,10 +54,8 @@ arcor2_manager --rpc-plugins arcor2_kinali.plugins/KinaliRpcPlugin
 
 ## Releasing a new version
 1. Update version info
-	 2. Update base image version (FROM statement) in docker/Dockerfile
-	 3. Update images version info in docker-compose.yml
  2. Push all changes to arcor2_kinali repository
  3. Create tag/release with new version
- 5. Build all arcor2_kinali service with: _docker build . -f docker/Dockerfile -t arcor2/arcor2_kinali:version_
+ 5. Build arcor2_kinali service with: _docker build . -f docker/Dockerfile-arserver -t arcor2/arcor2_arserver :\$(cat arcor2/VERSION) --build-arg version=\$(cat arcor2/VERSION)_
  6. Push service to dockerhub
-	 7. docker push arcor2/arcor2_kinali:version
+	 7. docker push arcor2/arcor2_kinali:$(cat arcor2/VERSION)

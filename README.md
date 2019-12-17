@@ -30,7 +30,7 @@
 ### Run system (stable version)
 ```bash
 cd docker
-export ARCOR2_VERSION=\$(cat ../arcor2/VERSION)
+export ARCOR2_VERSION=$(cat ../arcor2/VERSION)
 sudo -E docker-compose up
 ```
 

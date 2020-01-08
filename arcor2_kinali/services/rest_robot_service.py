@@ -103,7 +103,8 @@ class RestRobotService(RobotService):
         return rest.get(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/pose", Pose)
 
     @action
-    def move(self, robot_id: str, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum, speed: float) -> None:
+    def move(self, robot_id: str, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum,
+             speed: float = 0.5) -> None:
         """
         Moves the robot's end-effector to a specific pose.
         :param robot_id: Unique robot id.
@@ -119,7 +120,7 @@ class RestRobotService(RobotService):
 
     @action
     def move_relative(self, robot_id: str, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
-                      move_type: MoveTypeEnum, speed: float) -> None:
+                      move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
         Moves the robot's end-effector to a specific pose.
         :param robot_id: Unique robot id.
@@ -137,7 +138,7 @@ class RestRobotService(RobotService):
 
     @action
     def move_relative_joints(self, robot_id: str, end_effector_id: str, joints: RobotJoints,
-                             rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float) -> None:
+                             rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
         Moves the robot's end-effector relatively to specific joint values.
         :param robot_id: Unique robot id.
@@ -154,7 +155,7 @@ class RestRobotService(RobotService):
                  {"moveType": move_type.value, "speed": speed})
 
     @action
-    def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float) -> None:
+    def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
 
         assert robot_id == joints.robot_id
         rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})

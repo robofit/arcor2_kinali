@@ -1,32 +1,66 @@
 version: '3'
 
 services:
-  arcor:
-    build: ./arcor2_kinali
-    container_name: arcor2
-    command: ["/wait-for", "http://database:5001/projects", "--","/bin/bash", "/start.sh"]
+  arserver:
+    image: arcor2/arcor2_kinali:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    container_name: arserver
     depends_on:
-      - database
+      - project
+      - build
+      - execution
+      - robot
     ports:
       - "6789:6789"
     environment:
-      - ARCOR2_KINALI_RESTAPI_ADDRESS=http://kinali:5000 
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://database:5001
-#    volumes:
-#      - C:\arcor2\arcor2:/root/arcor2/arcor2
-#      - C:\arcor2\arcor2\object_types:/root/arcor2/arcor2/object_types
-#      - C:\arcor2_kinali\arcor2_kinali:/root/arcor2_kinali/arcor2_kinali
-  kinali:
-    image: office.kinalisoft.eu:8082/kinalisoft-pickmaster-restserver:0.1.0-alpha.4
-    container_name: kinali
-    ports:
-      - "5000:5000"
-  database:
-    build: ./database
-    command: /bin/bash /start.sh
+      - REST_ROBOT_SERVICE_URL=http://robot:13000 
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000            
+      - ARCOR2_EXECUTION_URL=ws://execution:6790
+  build:
+    image: arcor2/arcor2_build:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    container_name: build
     environment:
-      - ARCOR2_MONGO_ADDRESS=localhost:27017
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000
+  execution:
+    image: arcor2/arcor2_execution:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    container_name: execution
+    environment:
+      - REST_ROBOT_SERVICE_URL=http://robot:13000 
+      - ARCOR2_BUILDER_URL=http://build:5007
+  robot:
+        image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-rc.1
+        container_name: "robot"
+        ports:
+          - "13000-13001:13000-13001"
+        environment:
+          STORAGE_URL: project:11000
+        links:
+            - project
+        depends_on:
+            - project
+  project:
+    image: kinalisoft/storage:0.6.1
+    container_name: "project"
     ports:
-      - "5001:5001"            
-#    volumes:
-#      - C:\arcor2\arcor2:/root/arcor2/arcor2
+      - "11000-11001:11000-11001"
+    environment:
+      MONGODB_URL: mongodb:27017
+    links:
+        - mongodb
+    depends_on:
+        - mongodb
+
+  mongodb:
+    image: mongo:4.2.0-bionic
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - mongodb:/data/db
+    expose:
+      - "27017"
+
+volumes:
+  mongodb:   
+
+

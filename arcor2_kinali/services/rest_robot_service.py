@@ -115,6 +115,8 @@ class RestRobotService(RobotService):
         :return:
         """
 
+        assert 0.0 <= speed <= 1.0
+
         rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", pose,
                  {"moveType": move_type.value, "speed": speed})
 
@@ -131,6 +133,8 @@ class RestRobotService(RobotService):
         :param speed: Speed of move.
         :return:
         """
+
+        assert 0.0 <= speed <= 1.0
 
         body = MoveRelativeParameters(pose, rel_pose.position, rel_pose.orientation)
         rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative", body,
@@ -150,6 +154,8 @@ class RestRobotService(RobotService):
         :return:
         """
 
+        assert 0.0 <= speed <= 1.0
+
         body = MoveRelativeJointsParameters(joints.joints, rel_pose.position, rel_pose.orientation)
         rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative_joints", body,
                  {"moveType": move_type.value, "speed": speed})
@@ -157,6 +163,7 @@ class RestRobotService(RobotService):
     @action
     def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
 
+        assert 0.0 <= speed <= 1.0
         assert robot_id == joints.robot_id
         rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
@@ -183,13 +190,20 @@ class RestRobotService(RobotService):
         return set(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
     @action
-    def grip(self, robot_id: str, gripper_id: str, position: float, speed: float, force: float) -> None:
+    def grip(self, robot_id: str, gripper_id: str, position: float, speed: float = 0.5, force: float = 0.5) -> None:
+
+        assert 0.0 <= speed <= 1.0
+        assert 0.0 <= force <= 1.0
+
         rest.put(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/grip", params={"position": position,
                                                                                 "speed": speed,
                                                                                 "force": force})
 
     @action
-    def set_opening(self, robot_id: str, gripper_id: str, position: float, speed: float) -> None:
+    def set_opening(self, robot_id: str, gripper_id: str, position: float, speed: float = 0.5) -> None:
+
+        assert 0.0 <= speed <= 1.0
+
         rest.put(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/opening", params={"position": position,
                                                                                    "speed": speed})
 

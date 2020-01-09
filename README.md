@@ -28,6 +28,16 @@
 
 
 ### Run system (stable version)
+#### Windows
+
+```bash
+cd docker
+$env:ARCOR2_VERSION=$(cat ..\arcor2\VERSION)
+docker-compose up
+```
+
+#### Linux
+
 ```bash
 cd docker
 export ARCOR2_VERSION=$(cat ../arcor2/VERSION)
@@ -35,6 +45,16 @@ sudo -E docker-compose up
 ```
 
 ### Run newest build
+#### Windows
+
+```bash
+cd docker
+$env:ARCOR2_VERSION="latest"
+docker-compose up
+```
+
+#### Linux
+
 ```bash
 cd docker
 export ARCOR2_VERSION=latest

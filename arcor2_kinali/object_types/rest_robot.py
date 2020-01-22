@@ -1,7 +1,7 @@
 from typing import Iterator, Set, Optional, List
 
 from arcor2.object_types import Robot
-from arcor2.data.common import Pose, ActionMetadata, Joint, RelativePose, RobotJoints
+from arcor2.data.common import Pose, ActionMetadata, Joint, RobotJoints
 from arcor2.data.object_type import MeshFocusAction, Models
 try:
     # for development
@@ -11,6 +11,8 @@ except ImportError:
     from ..services.rest_robot_service import RestRobotService, MoveTypeEnum
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
+
+from arcor2.parameter_plugins.relative_pose import RelativePose
 
 # TODO how to copy docstrings of methods from service?
 

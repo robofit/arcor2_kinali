@@ -6,7 +6,7 @@ from arcor2.data.object_type import MeshFocusAction, Models
 try:
     # for development
     from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum
-except ImportError:
+except (ImportError, ModuleNotFoundError):
     # for execution package
     from ..services.rest_robot_service import RestRobotService, MoveTypeEnum
 from arcor2.action import action

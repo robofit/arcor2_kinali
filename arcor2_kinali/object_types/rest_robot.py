@@ -8,7 +8,7 @@ try:
     from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum
 except ImportError:
     # for execution package
-    from ..services.rest_robot_service import RestRobotService, MoveTypeEnum
+    from services.rest_robot_service import RestRobotService, MoveTypeEnum
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 

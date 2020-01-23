@@ -146,8 +146,8 @@ class RestRobot(Robot):
 
 RestRobot.DYNAMIC_PARAMS = {
     "end_effector_id": (RestRobot.get_end_effectors_ids.__name__, set()),
-    "gripper_id": (RestRobot.grippers.__name__, {"robot_id"}),
-    "suction_id": (RestRobot.suctions.__name__, {"robot_id"}),
-    "input_id": (RestRobot.inputs.__name__, {"robot_id"}),
-    "output_id": (RestRobot.outputs.__name__, {"robot_id"})
+    "gripper_id": (RestRobot.grippers.__name__, set()),
+    "suction_id": (RestRobot.suctions.__name__, set()),
+    "input_id": (RestRobot.inputs.__name__, set()),
+    "output_id": (RestRobot.outputs.__name__, set())
 }

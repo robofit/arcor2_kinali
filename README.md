@@ -17,7 +17,7 @@
 
 #### Linux
 
- 1. Edit or create file */etc/docker/deamon.json*
+ 1. Edit or create file */etc/docker/daemon.json*
  2. Add: 
  {
 "insecure-registries": ["office.kinalisoft.eu:8082" ]
@@ -63,13 +63,13 @@ sudo -E docker-compose up
 
 ## Installation (for development without docker):
 ```bash
-pip3 install -e swagger_client
 pip3 install -e arcor2_kinali
 ```
 
 ## Usage:
 ```bash
-arcor2_manager --rpc-plugins arcor2_kinali.plugins/KinaliRpcPlugin
+./arcor2_kinali/services/upload.py
+./arcor2_kinali/object_types/upload.py
 ```
 
 ## Releasing a new version

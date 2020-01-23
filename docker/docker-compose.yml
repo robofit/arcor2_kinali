@@ -20,12 +20,16 @@ services:
     container_name: build
     environment:
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000
+    ports:
+      - "5007:5007"
   execution:
     image: arcor2/arcor2_execution:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: execution
     environment:
       - REST_ROBOT_SERVICE_URL=http://robot:13000 
       - ARCOR2_BUILDER_URL=http://build:5007
+    ports:
+      - "5009:5009"
   robot:
         image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-rc.1
         container_name: "robot"

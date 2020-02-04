@@ -5,11 +5,13 @@ from dataclasses import dataclass
 from dataclasses_jsonschema import JsonSchemaMixin
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, RelativePose, StrEnum, Position, Orientation
+from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, StrEnum, Position, Orientation
 from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
 from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
+
+from arcor2.parameter_plugins.relative_pose import RelativePose
 
 # TODO handle rest exceptions
 

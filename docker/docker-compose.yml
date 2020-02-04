@@ -22,8 +22,8 @@ services:
     container_name: build
     environment:
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000
-    ports:       
-      - "5009:5009"
+    ports:
+      - "5007:5007"
   execution:
     image: arcor2/arcor2_execution:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: execution

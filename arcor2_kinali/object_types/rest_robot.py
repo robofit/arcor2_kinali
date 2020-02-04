@@ -1,16 +1,18 @@
 from typing import Iterator, Set, Optional, List
 
 from arcor2.object_types import Robot
-from arcor2.data.common import Pose, ActionMetadata, Joint, RelativePose, RobotJoints
+from arcor2.data.common import Pose, ActionMetadata, Joint, RobotJoints
 from arcor2.data.object_type import MeshFocusAction, Models
 try:
     # for development
     from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum
 except ImportError:
     # for execution package
-    from ..services.rest_robot_service import RestRobotService, MoveTypeEnum
+    from services.rest_robot_service import RestRobotService, MoveTypeEnum
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
+
+from arcor2.parameter_plugins.relative_pose import RelativePose
 
 # TODO how to copy docstrings of methods from service?
 
@@ -144,8 +146,8 @@ class RestRobot(Robot):
 
 RestRobot.DYNAMIC_PARAMS = {
     "end_effector_id": (RestRobot.get_end_effectors_ids.__name__, set()),
-    "gripper_id": (RestRobot.grippers.__name__, {"robot_id"}),
-    "suction_id": (RestRobot.suctions.__name__, {"robot_id"}),
-    "input_id": (RestRobot.inputs.__name__, {"robot_id"}),
-    "output_id": (RestRobot.outputs.__name__, {"robot_id"})
+    "gripper_id": (RestRobot.grippers.__name__, set()),
+    "suction_id": (RestRobot.suctions.__name__, set()),
+    "input_id": (RestRobot.inputs.__name__, set()),
+    "output_id": (RestRobot.outputs.__name__, set())
 }

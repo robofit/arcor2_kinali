@@ -192,8 +192,10 @@ class RestRobotService(RobotService):
         return set(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
     @action
-    def grip(self, robot_id: str, gripper_id: str, position: float, speed: float = 0.5, force: float = 0.5) -> None:
+    def grip(self, robot_id: str, gripper_id: str, position: float = 0.0, speed: float = 0.5, force: float = 0.5) -> \
+            None:
 
+        assert 0.0 <= position <= 1.0
         assert 0.0 <= speed <= 1.0
         assert 0.0 <= force <= 1.0
 
@@ -202,8 +204,9 @@ class RestRobotService(RobotService):
                                                                                 "force": force})
 
     @action
-    def set_opening(self, robot_id: str, gripper_id: str, position: float, speed: float = 0.5) -> None:
+    def set_opening(self, robot_id: str, gripper_id: str, position: float = 1.0, speed: float = 0.5) -> None:
 
+        assert 0.0 <= position <= 1.0
         assert 0.0 <= speed <= 1.0
 
         rest.put(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/opening", params={"position": position,

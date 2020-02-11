@@ -8,7 +8,7 @@ try:
     from arcor2_kinali.services.rest_robot_service import RestRobotService, MoveTypeEnum
 except ImportError:
     # for execution package
-    from services.rest_robot_service import RestRobotService, MoveTypeEnum
+    from services.rest_robot_service import RestRobotService, MoveTypeEnum  # type: ignore
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 
@@ -51,7 +51,7 @@ class RestRobot(Robot):
         return self.robot_api.robot_joints(self.id)
 
     @action
-    def move(self, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum, speed: float) -> None:
+    def move(self, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
         Moves the robot's end-effector to a specific pose.
         :param end_effector_id: Unique end-effector id.
@@ -61,11 +61,13 @@ class RestRobot(Robot):
         :return:
         """
 
+        assert 0.0 <= speed <= 1.0
+
         self.robot_api.move(self.id, end_effector_id, pose, move_type, speed)
 
     @action
     def move_relative(self, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
-                      move_type: MoveTypeEnum, speed: float) -> None:
+                      move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
         Moves the robot's end-effector to a specific pose.
         :param end_effector_id: Unique end-effector id.
@@ -76,18 +78,22 @@ class RestRobot(Robot):
         :return:
         """
 
+        assert 0.0 <= speed <= 1.0
+
         self.robot_api.move_relative(end_effector_id, pose, rel_pose, move_type, speed)
 
     @action
-    def set_joints(self, joints: RobotJoints, move_type: MoveTypeEnum, speed: float) -> None:
+    def set_joints(self, joints: RobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
 
+        assert 0.0 <= speed <= 1.0
         assert self.id == joints.robot_id
+
         self.robot_api.set_joints(self.id, joints, move_type, speed)
 
     def inputs(self) -> Set[str]:
         return self.robot_api.inputs(self.id)
 
-    def outputs(self, robot_id: str) -> Set[str]:
+    def outputs(self) -> Set[str]:
         return self.robot_api.outputs(self.id)
 
     @action
@@ -96,7 +102,7 @@ class RestRobot(Robot):
 
     @action
     def set_output(self, output_id: str, value: float) -> None:
-        self.robot_api.set_output(output_id)
+        self.robot_api.set_output(output_id, value)
 
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return self.robot_api.focus(mfa)
@@ -105,11 +111,20 @@ class RestRobot(Robot):
         return self.robot_api.grippers(self.id)
 
     @action
-    def grip(self, gripper_id: str, position: float, speed: float, force: float) -> None:
+    def grip(self, gripper_id: str, position: float = 0.0, speed: float = 0.5, force: float = 0.5) -> None:
+
+        assert 0.0 <= position <= 1.0
+        assert 0.0 <= speed <= 1.0
+        assert 0.0 <= force <= 1.0
+
         return self.robot_api.grip(self.id, gripper_id, position, speed, force)
 
     @action
-    def set_opening(self, gripper_id: str, position: float, speed: float) -> None:
+    def set_opening(self, gripper_id: str, position: float = 1.0, speed: float = 0.5) -> None:
+
+        assert 0.0 <= position <= 1.0
+        assert 0.0 <= speed <= 1.0
+
         self.robot_api.set_opening(self.id, gripper_id, position, speed)
 
     @action

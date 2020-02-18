@@ -8,11 +8,14 @@ services:
       - project
       - build
       - execution
-      - robot
+      - testitoff-robot-webapi
     ports:
       - "6789:6789"
+    networks:
+          - testitoff-robot-network
     environment:
-      - REST_ROBOT_SERVICE_URL=http://robot:13000 
+      - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
+      - REST_SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000            
       - ARCOR2_EXECUTION_URL=ws://execution:6790
   build:
@@ -25,22 +28,72 @@ services:
   execution:
     image: arcor2/arcor2_execution:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: execution
+    networks:
+          - testitoff-robot-network
     environment:
-      - REST_ROBOT_SERVICE_URL=http://robot:13000 
+      - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
       - ARCOR2_BUILDER_URL=http://build:5007
     ports:
-      - "5009:5009"
-  robot:
-        image: office.kinalisoft.eu:8082/kinalisoft-robot-simulator:0.1.0-rc.1
-        container_name: "robot"
-        ports:
-          - "13000-13001:13000-13001"
+      - "5010:5009"
+  testitoff-robot-webapi:
+      image: registry.gitlab.com/kinalisoft/test-it-off/robot-simulator:0.2.1
+      container_name: "testitoff-robot-webapi"
+      expose:
+          - "13000"
+      environment:
+          - MONGODB_URL=testitoff-robot-mongodb:27017
+      ports:
+        - "13000:13000"
+      links:
+          - project
+      restart: always
+      networks:
+        - testitoff-robot-network
+  testitoff-robot-mongodb:
+      image: mongo:4.2.0-bionic
+      container_name: "testitoff-robot-mongodb"
+      restart: always
+      environment:
+          - MONGO_DATA_DIR=/data/db
+          - MONGO_LOG_DIR=/dev/null
+      volumes:
+          - testitoff-robot-mongodb:/data/db
+      networks:
+          - testitoff-robot-network
+      expose:
+          - "27017"
+      ports:
+          - "13017:27017"  
+
+  
+  testitoff-search-webapi:
+        image: registry.gitlab.com/kinalisoft/test-it-off/search-simulator:latest
+        container_name: "testitoff-search-webapi"
+        privileged: true
+        restart: always
         environment:
-          STORAGE_URL: project:11000
-        links:
-            - project
-        depends_on:
-            - project
+          - MONGODB_URL=testitoff-search-mongodb:27017
+        ports:
+          - "12000:12000"
+        networks:
+          - testitoff-search-network
+
+  testitoff-search-mongodb:
+        image: mongo:4.2.0-bionic
+        container_name: "testitoff-search-mongodb"
+        restart: always
+        environment:
+            - MONGO_DATA_DIR=/data/db
+            - MONGO_LOG_DIR=/dev/null
+        volumes:
+            - testitoff-search-mongodb:/data/db
+        networks:
+            - testitoff-search-network
+        expose:
+            - "27017"
+        ports:
+            - "12017:27017" 
+
   project:
     image: kinalisoft/storage:0.6.1
     container_name: "project"
@@ -52,6 +105,8 @@ services:
         - mongodb
     depends_on:
         - mongodb
+    networks:
+      - testitoff-robot-network
 
   mongodb:
     image: mongo:4.2.0-bionic
@@ -63,8 +118,16 @@ services:
       - mongodb:/data/db
     expose:
       - "27017"
+    networks:
+      - testitoff-robot-network
 
 volumes:
   mongodb:   
+  testitoff-robot-mongodb:  
+  testitoff-search-mongodb:
+
+networks:
+  testitoff-robot-network: 
+  testitoff-search-network:
 
 

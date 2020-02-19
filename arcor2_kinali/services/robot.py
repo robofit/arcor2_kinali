@@ -180,7 +180,7 @@ class RestRobotService(RobotService):
     @action
     def get_input(self, robot_id: str, input_id: str) -> float:
         super(RestRobotService, self).get_input(robot_id, input_id)
-        return rest.get_float(f"{URL}/robots/{robot_id}/inputs/{input_id}")
+        return rest.get_primitive(f"{URL}/robots/{robot_id}/inputs/{input_id}", float)
 
     @action
     def set_output(self, robot_id: str, output_id: str, value: float) -> None:
@@ -216,7 +216,7 @@ class RestRobotService(RobotService):
 
     @action
     def is_item_gripped(self, robot_id: str, gripper_id: str) -> bool:
-        return rest.get_bool(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped")
+        return rest.get_primitive(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped", bool)
 
     def suctions(self, robot_id: str) -> Set[str]:
         return set(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
@@ -231,7 +231,7 @@ class RestRobotService(RobotService):
 
     @action
     def is_item_attached(self, robot_id: str, suction_id: str) -> bool:
-        return rest.get_bool(f"{URL}/robots/{robot_id}/suctions/{suction_id}/attached")
+        return rest.get_primitive(f"{URL}/robots/{robot_id}/suctions/{suction_id}/attached", bool)
 
     move.__action__ = ActionMetadata(free=True, blocking=True)
     move_relative.__action__ = ActionMetadata(free=True, blocking=True)

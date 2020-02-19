@@ -17,4 +17,4 @@ def destroy(url: str) -> None:
 
 
 def active(url: str) -> Optional[str]:
-    return rest.get_str(f"{url}/systems/active")
+    return rest.get_primitive(f"{url}/systems/active", str)

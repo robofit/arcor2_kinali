@@ -18,6 +18,7 @@ services:
       - REST_SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000            
       - ARCOR2_EXECUTION_URL=ws://execution:6790
+      - ARCOR2_BUILDER_URL=http://build:5007
   build:
     image: arcor2/arcor2_build:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: build

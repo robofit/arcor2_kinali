@@ -1,24 +1,25 @@
 # coding: utf-8
 
 
-from setuptools import setup  # type: ignore
+from setuptools import setup, find_packages  # type: ignore
 
 import arcor2_kinali
 
 setup(
     name='arcor2_kinali',
     version=arcor2_kinali.version(),
-    packages=['arcor2_kinali', 'arcor2_kinali.object_types', 'arcor2_kinali.services'],
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_data={"arcor2_kinali": ["py.typed"]},
     url='',
     license='',
     author='Robo@FIT',
-    author_email='imaterna@fit.vutbr.cz',
+    author_email='imaterna@fit.vut.cz',
     description='',
     install_requires=[
         'dataclasses',
         'dataclasses-jsonschema[fast-validation]',
-        'arcor2==0.2.*'
+        'arcor2==0.2.*',
+        'Pillow'
     ],
     zip_safe=False,
 )

@@ -42,7 +42,7 @@ class BarcodeService(Service):
         :return:
         """
 
-        return rest.get_str(f"{URL}/scanner/scan")
+        return rest.put_returning_primitive(f"{URL}/scanner/scan", str)
 
     active_scanners.__action__ = ActionMetadata(free=True, blocking=True)
     scan.__action__ = ActionMetadata(free=True, blocking=True)

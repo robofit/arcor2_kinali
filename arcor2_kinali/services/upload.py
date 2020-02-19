@@ -6,7 +6,8 @@ from arcor2.services.upload import upload
 
 def main():
 
-    upload("arcor2_kinali.services.rest_robot_service/RestRobotService")
+    upload("arcor2_kinali.services.robot/RestRobotService")
+    upload("arcor2_kinali.services.search/SearchService")
 
 
 if __name__ == "__main__":

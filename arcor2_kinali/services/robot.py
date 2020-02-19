@@ -10,8 +10,9 @@ from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
 from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
-
 from arcor2.parameter_plugins.relative_pose import RelativePose
+
+from arcor2_kinali.services import systems
 
 # TODO handle rest exceptions
 
@@ -54,14 +55,15 @@ class RestRobotService(RobotService):
     def __init__(self, configuration_id: str):
 
         super(RestRobotService, self).__init__(configuration_id)
-        # TODO make this shared for all REST services (mixin?)
-        rest.put(f"{URL}/systems/{self.configuration_id}/create")
-
+        systems.create(URL, self)
         self._robot_ids: Optional[Set[str]] = None
+
+    def destroy(self):
+        systems.destroy(URL)
 
     @staticmethod
     def get_configuration_ids() -> Set[str]:
-        return set(rest.get_data(f"{URL}/systems"))
+        return systems.systems(URL)
 
     def add_collision(self, obj: Generic) -> None:
         if not obj.collision_model or obj.collision_model.type() == ModelTypeEnum.NONE:

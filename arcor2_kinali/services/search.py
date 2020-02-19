@@ -1,8 +1,6 @@
 from typing import Set, List
 import os
-from dataclasses import dataclass
 
-from dataclasses_jsonschema import JsonSchemaMixin
 from PIL.Image import Image  # type: ignore
 
 from arcor2.services import Service
@@ -11,25 +9,11 @@ from arcor2.action import action
 from arcor2 import rest
 
 from arcor2_kinali.services import systems
+from arcor2_kinali.data.search import SearchOutput
 
 # TODO handle rest exceptions
 
 URL = os.getenv("SEARCH_SERVICE_URL", "http://127.0.0.1:12000")
-
-
-@dataclass
-class ScoredItem(JsonSchemaMixin):
-
-    id: int
-    item_pose: Pose
-    search_score: float
-
-
-@dataclass
-class SearchOutput(JsonSchemaMixin):
-
-    items: List[ScoredItem]
-    container_pose: Pose
 
 
 class SearchService(Service):

@@ -1,11 +1,8 @@
 from typing import Set, Optional, List
 import os
-from dataclasses import dataclass
-
-from dataclasses_jsonschema import JsonSchemaMixin
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint, StrEnum, Position, Orientation
+from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint
 from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
@@ -13,6 +10,7 @@ from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
 
 from arcor2_kinali.services import systems
+from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters, MoveRelativeParameters
 
 # TODO handle rest exceptions
 
@@ -22,29 +20,6 @@ URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
 def collision_id(obj: Generic) -> str:
     assert obj.collision_model is not None
     return obj.collision_model.type().value + "-" + obj.id
-
-
-class MoveTypeEnum(StrEnum):
-
-    AVOID_COLLISIONS: str = "AvoidCollisions"
-    LINE: str = "Line"
-    SIMPLE: str = "Simple"
-
-
-@dataclass
-class MoveRelativeParameters(JsonSchemaMixin):
-
-    pose: Pose
-    position: Position  # relative position
-    orientation: Orientation  # relative orientation
-
-
-@dataclass
-class MoveRelativeJointsParameters(JsonSchemaMixin):
-
-    joints: List[Joint]
-    position: Position  # relative position
-    orientation: Orientation  # relative orientation
 
 
 class RestRobotService(RobotService):

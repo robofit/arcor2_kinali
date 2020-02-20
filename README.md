@@ -7,25 +7,6 @@
  - docker
  - docker-compose
 
-### Logging to repositories (only once):
-#### Windows 
-
- 1. In docker desktop setting/Daemon add "office.kinalisoft.eu:8082" to insecure registries
- 2. Restart docker (using docker desktop)
- 3. _docker login office.kinalisoft.eu:8082 --username=fit  --password=FIT2019_
- 4. _docker login --username=arcor2 --password heslo.arcor2_
-
-#### Linux
-
- 1. Edit or create file */etc/docker/daemon.json*
- 2. Add: 
- {
-"insecure-registries": ["office.kinalisoft.eu:8082" ]
-}
-3. _sudo /etc/init.t/docker restart_
-4. _docker login office.kinalisoft.eu:8082 --username=fit  --password=FIT2019_
-6. _docker login --username=arcor2 --password heslo.arcor2_
-
 
 ### Run system (stable version)
 #### Windows

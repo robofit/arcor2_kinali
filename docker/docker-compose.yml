@@ -102,7 +102,7 @@ services:
             - "12017:27017" 
 
   project:
-    image: kinalisoft/storage:0.6.1
+    image: kinalisoft/testittoff-project:0.1.0-rc.2
     container_name: "project"
     ports:
       - "11000-11001:11000-11001"

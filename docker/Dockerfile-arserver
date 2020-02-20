@@ -1,0 +1,6 @@
+ARG version=latest
+FROM arcor2/arcor2_base_kinali:$version
+
+RUN ln -fs /root/arcor2_kinali/docker/start.sh /start.sh
+
+expose 6789

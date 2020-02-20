@@ -54,9 +54,9 @@ pip3 install -e arcor2_kinali
 ```
 
 ## Releasing a new version
-1. Update version info
+ 1. Update version info
  2. Push all changes to arcor2_kinali repository
  3. Create tag/release with new version
  5. Build arcor2_kinali service with: _docker build . -f docker/Dockerfile-arserver -t arcor2/arcor2_arserver :\$(cat arcor2/VERSION) --build-arg version=\$(cat arcor2/VERSION)_
  6. Push service to dockerhub
-	 7. docker push arcor2/arcor2_kinali:$(cat arcor2/VERSION)
+ 7. docker push arcor2/arcor2_kinali:$(cat arcor2/VERSION)

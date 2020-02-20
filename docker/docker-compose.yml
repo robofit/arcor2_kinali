@@ -2,7 +2,7 @@ version: '3'
 
 services:
   arserver:
-    image: arcor2/arcor2_kinali:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    image: arcor2/arcor2_arserver_kinali:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: arserver
     depends_on:
       - project
@@ -13,12 +13,14 @@ services:
       - "6789:6789"
     networks:
           - testitoff-robot-network
+          - testitoff-search-network
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
-      - REST_SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
+      - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000            
       - ARCOR2_EXECUTION_URL=ws://execution:6790
       - ARCOR2_BUILDER_URL=http://build:5007
+      - BARCODE_SERVICE_URL=""
   build:
     image: arcor2/arcor2_build:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: build
@@ -29,15 +31,17 @@ services:
     networks:           
       - testitoff-robot-network
   execution:
-    image: arcor2/arcor2_execution:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    image: arcor2/arcor2_execution_kinali:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
     container_name: execution
     networks:
           - testitoff-robot-network
+          - testitoff-search-network
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
+      - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
       - ARCOR2_BUILDER_URL=http://build:5007
     ports:
-      - "5010:5009"
+      - "5009:5009"
   testitoff-robot-webapi:
       image: registry.gitlab.com/kinalisoft/test-it-off/robot-simulator:0.2.1
       container_name: "testitoff-robot-webapi"

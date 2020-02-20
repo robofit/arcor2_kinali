@@ -43,11 +43,12 @@ sudo -E docker-compose up
 ```
 
 ## Uploading services and object_types to project service
-Use docker exec to attach to arserver container and run following scripts 
+Use docker exec to attach to arserver container and run following scripts and restart arserver.
 ```bash
-/root/arcor2_kinali/services/upload.py
-/root/arcor2_kinali/object_types/upload.py
+/root/arcor2_kinali/arcor2_kinali/services/upload.py
+/root/arcor2_kinali/arcor2_kinali/object_types/upload.py
 ```
+
 
 ## Installation (for development without docker):
 ```bash

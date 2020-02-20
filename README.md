@@ -42,21 +42,17 @@ export ARCOR2_VERSION=latest
 sudo -E docker-compose up
 ```
 
+## Uploading services and object_types to project service
+Use docker exec to attach to arserver container and run following scripts 
+```bash
+/root/arcor2_kinali/services/upload.py
+/root/arcor2_kinali/object_types/upload.py
+```
+
 ## Installation (for development without docker):
 ```bash
 pip3 install -e arcor2_kinali
 ```
 
-## Usage:
-```bash
-./arcor2_kinali/services/upload.py
-./arcor2_kinali/object_types/upload.py
-```
-
 ## Releasing a new version
- 1. Update version info
- 2. Push all changes to arcor2_kinali repository
- 3. Create tag/release with new version
- 5. Build arcor2_kinali service with: _docker build . -f docker/Dockerfile-arserver -t arcor2/arcor2_arserver :\$(cat arcor2/VERSION) --build-arg version=\$(cat arcor2/VERSION)_
- 6. Push service to dockerhub
- 7. docker push arcor2/arcor2_kinali:$(cat arcor2/VERSION)
+ TBA

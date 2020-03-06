@@ -2,11 +2,11 @@ from typing import Set, Optional, List
 import os
 
 from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, RobotJoints, Joint
+from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
 from arcor2.action import action
 from arcor2 import rest
 from arcor2.object_types import Generic
-from arcor2.data.object_type import ModelTypeEnum, MeshFocusAction
+from arcor2.data.object_type import Model3dType, MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
 
 from arcor2_kinali.services import systems
@@ -41,13 +41,13 @@ class RestRobotService(RobotService):
         return systems.systems(URL)
 
     def add_collision(self, obj: Generic) -> None:
-        if not obj.collision_model or obj.collision_model.type() == ModelTypeEnum.NONE:
+        if not obj.collision_model or obj.collision_model.type() == Model3dType.NONE:
             return
         params = obj.collision_model.to_dict()
         params["id"] = collision_id(obj)
 
         # TODO temporary hack
-        if obj.collision_model.type() == ModelTypeEnum.MESH:
+        if obj.collision_model.type() == Model3dType.MESH:
             params["mesh_scale_x"] = 1.0
             params["mesh_scale_y"] = 1.0
             params["mesh_scale_z"] = 1.0
@@ -56,7 +56,7 @@ class RestRobotService(RobotService):
         rest.put(f"{URL}/collisions/{obj.collision_model.type().value}", obj.pose, params)
 
     def remove_collision(self, obj: Generic) -> None:
-        if not obj.collision_model or obj.collision_model.type() == ModelTypeEnum.NONE:
+        if not obj.collision_model or obj.collision_model.type() == Model3dType.NONE:
             return
         rest.delete(f"{URL}/collisions/{collision_id(obj)}")
 
@@ -120,7 +120,7 @@ class RestRobotService(RobotService):
                  {"moveType": move_type.value, "speed": speed})
 
     @action
-    def move_relative_joints(self, robot_id: str, end_effector_id: str, joints: RobotJoints,
+    def move_relative_joints(self, robot_id: str, end_effector_id: str, joints: ProjectRobotJoints,
                              rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
         Moves the robot's end-effector relatively to specific joint values.
@@ -140,7 +140,8 @@ class RestRobotService(RobotService):
                  {"moveType": move_type.value, "speed": speed})
 
     @action
-    def set_joints(self, robot_id: str, joints: RobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
+    def set_joints(self, robot_id: str, joints: ProjectRobotJoints, move_type: MoveTypeEnum,
+                   speed: float = 0.5) -> None:
 
         assert 0.0 <= speed <= 1.0
         assert robot_id == joints.robot_id

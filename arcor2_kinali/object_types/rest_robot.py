@@ -1,7 +1,7 @@
 from typing import Iterator, Set, Optional, List
 
 from arcor2.object_types import Robot
-from arcor2.data.common import Pose, ActionMetadata, Joint, RobotJoints
+from arcor2.data.common import Pose, ActionMetadata, Joint, ProjectRobotJoints
 from arcor2.data.object_type import MeshFocusAction, Models
 try:
     # for development
@@ -83,7 +83,7 @@ class RestRobot(Robot):
         self.robot_api.move_relative(end_effector_id, pose, rel_pose, move_type, speed)
 
     @action
-    def set_joints(self, joints: RobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
+    def set_joints(self, joints: ProjectRobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
 
         assert 0.0 <= speed <= 1.0
         assert self.id == joints.robot_id

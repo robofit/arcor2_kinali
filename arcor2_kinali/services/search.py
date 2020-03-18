@@ -9,7 +9,7 @@ from arcor2.action import action
 from arcor2 import rest
 
 from arcor2_kinali.services import systems
-from arcor2_kinali.data.search import SearchOutput
+from arcor2_kinali.data.search import SearchOutput, GripperSetup
 
 # TODO handle rest exceptions
 
@@ -77,6 +77,28 @@ class SearchService(Service):
 
         return rest.put_returning_list(f"{URL}/pick/suctions/poses", pose, {"item_id": item_id, "tool_id": tool_id},
                                        data_cls=Pose)
+
+    def put_gripper_configuration(self, item_id: str, tool_id: str, gripper_setup: GripperSetup) -> None:
+        """
+        Adds or updates gripper definitions for tool and item.
+        :param item_id:
+        :param tool_id:
+        :param gripper_setup:
+        :return:
+        """
+
+        rest.put(f"{URL}/pick/grippers", gripper_setup, {"item_id": item_id, "tool_id": tool_id})
+
+    def get_pick_poses_for_gripper(self, item_id: str, tool_id: str, pose: Pose) -> GripperSetup:
+        """
+        Gets pick poses for specific tool and item.
+        :param item_id:
+        :param tool_id:
+        :param pose:
+        :return:
+        """
+
+        return rest.put(f"{URL}/pick/grippers/setup", pose, {"item_id": item_id, "tool_id": tool_id}, GripperSetup)
 
     @action
     def search(self) -> SearchOutput:

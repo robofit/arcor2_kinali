@@ -77,7 +77,7 @@ services:
 
   
   testitoff-search-webapi:
-        image: registry.gitlab.com/kinalisoft/test-it-off/search-simulator:0.2.0-rc.5
+        image: registry.gitlab.com/kinalisoft/test-it-off/search-simulator:0.3.0
         container_name: "testitoff-search-webapi"
         privileged: true
         restart: always

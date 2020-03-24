@@ -18,7 +18,7 @@ setup(
     install_requires=[
         'dataclasses',
         'dataclasses-jsonschema[fast-validation]',
-        'arcor2==0.2.*',
+        'arcor2==0.3.*',
         'Pillow'
     ],
     zip_safe=False,

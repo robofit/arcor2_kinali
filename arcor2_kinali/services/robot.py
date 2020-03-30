@@ -44,7 +44,8 @@ class RestRobotService(RobotService):
         if not obj.collision_model or obj.collision_model.type() == Model3dType.NONE:
             return
         params = obj.collision_model.to_dict()
-        params["id"] = collision_id(obj)
+        del params["id"]
+        params[obj.collision_model.__class__.__name__.lower() + "Id"] = collision_id(obj)
 
         # TODO temporary hack
         if obj.collision_model.type() == Model3dType.MESH:

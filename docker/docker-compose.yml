@@ -46,7 +46,7 @@ services:
     ports:
       - "5009:5009"
   testitoff-robot-webapi:
-      image: registry.gitlab.com/kinalisoft/test-it-off/robot-simulator:0.2.1
+      image: registry.gitlab.com/kinalisoft/test-it-off/robot-simulator:0.3.0
       container_name: "testitoff-robot-webapi"
       expose:
           - "13000"

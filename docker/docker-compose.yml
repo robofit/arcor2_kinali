@@ -23,7 +23,7 @@ services:
       - ARCOR2_BUILDER_URL=http://build:5007
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
   build:
-    image: arcor2/arcor2_build:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}
     container_name: build
     environment:
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000
@@ -33,7 +33,7 @@ services:
       - testitoff-robot-network
       - testitoff-barcode-network
   execution:
-    image: arcor2/arcor2_execution_kinali:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+    image: arcor2/arcor2_execution_kinali:${ARCOR2_EXECUTION_VERSION:?ARCOR2_EXECUTION_VERSION env variable not set}
     container_name: execution
     networks:
           - testitoff-robot-network

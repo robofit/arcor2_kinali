@@ -14,11 +14,25 @@ It is recommended to use explicit stable version of each image instead of latest
 
 ```bash
 cd docker
-$env:ARCOR2_VERSION=latest
-$env:ARCOR2_BUILD_VERSION=latest
-$env:ARCOR2_EXECUTION_VERSION=latest
+$env:ARCOR2_VERSION="latest"
+$env:ARCOR2_BUILD_VERSION="latest"
+$env:ARCOR2_EXECUTION_VERSION="latest"
 docker-compose up
 ```
+
+For persistent variables, use this:
+
+```bash
+[Environment]::SetEnvironmentVariable("ARCOR2_VERSION", "latest", "User")
+[Environment]::SetEnvironmentVariable("ARCOR2_BUILD_VERSION", "latest", "User")
+[Environment]::SetEnvironmentVariable("ARCOR2_EXECUTION_VERSION", "latest", "User")
+```
+Restart powershell or open new window.
+```
+cd docker
+docker-compose up
+```
+
 
 #### Linux
 

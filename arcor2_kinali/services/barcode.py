@@ -33,7 +33,7 @@ class BarcodeService(Service):
         Gets scanners ids.
         :return:
         """
-        return set(rest.get_list_primitive(f"{URL}/scanner/ids", str))
+        return set(rest.get_list_primitive(f"{URL}/scanners", str))
 
     @action
     def scan(self, scanner_id: str) -> str:
@@ -43,7 +43,7 @@ class BarcodeService(Service):
         :return:
         """
 
-        return rest.put_returning_primitive(f"{URL}/scanner/scan", str, params={"id": scanner_id})
+        return rest.get_primitive(f"{URL}/scanners/{scanner_id}/scan", str)
 
     active_scanners.__action__ = ActionMetadata(free=True, blocking=True)
     scan.__action__ = ActionMetadata(free=True, blocking=True)

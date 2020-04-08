@@ -161,8 +161,15 @@ class RestRobotService(RobotService):
 
     @action
     def set_output(self, robot_id: str, output_id: str, value: float) -> None:
+
+        assert 0.0 <= value <= 1.0
+
         super(RestRobotService, self).set_output(robot_id, output_id, value)
         rest.put(f"{URL}/robots/{robot_id}/outputs/{output_id}", params={"value": value})
+
+    @action
+    def get_output(self, robot_id: str, output_id: str) -> float:
+        return rest.get_primitive(f"{URL}/robots/{robot_id}/outputs/{output_id}", float)
 
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return rest.put(f"{URL}/utils/focus", mfa, data_cls=Pose)
@@ -192,6 +199,11 @@ class RestRobotService(RobotService):
                                                                                    "speed": speed})
 
     @action
+    def get_gripper_opening(self, robot_id: str, gripper_id: str) -> float:
+
+        return rest.get_primitive(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/opening", float)
+
+    @action
     def is_item_gripped(self, robot_id: str, gripper_id: str) -> bool:
         return rest.get_primitive(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped", bool)
 
@@ -215,8 +227,10 @@ class RestRobotService(RobotService):
     set_joints.__action__ = ActionMetadata(free=True, blocking=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True)
+    get_output.__action__ = ActionMetadata(free=True, blocking=True)
     grip.__action__ = ActionMetadata(free=True, blocking=True)
     set_opening.__action__ = ActionMetadata(free=True, blocking=True)
+    get_gripper_opening.__action__ = ActionMetadata(free=True, blocking=True)
     is_item_gripped.__action__ = ActionMetadata(free=True, blocking=True)
     suck.__action__ = ActionMetadata(free=True, blocking=True)
     release.__action__ = ActionMetadata(free=True, blocking=True)

@@ -9,6 +9,7 @@ def main():
     upload("arcor2_kinali.services.robot/RestRobotService")
     upload("arcor2_kinali.services.search/SearchService")
     upload("arcor2_kinali.services.barcode/BarcodeService")
+    upload("arcor2_kinali.services.statistic/StatisticService")
 
 
 if __name__ == "__main__":

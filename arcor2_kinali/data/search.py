@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from dataclasses_jsonschema import JsonSchemaMixin
 
-from arcor2.data.common import Pose
+from arcor2.data.common import Pose, StrEnum
 
 
 @dataclass
@@ -29,3 +29,38 @@ class GripperSetup(JsonSchemaMixin):
     pre_pick_opening: float
     pick_grip: float
     pick_force: float
+
+
+@dataclass
+class SearchVisualizationSetup(JsonSchemaMixin):
+
+    container: bool
+    space_selector: bool
+    estimate: bool
+    refine: bool
+
+
+@dataclass
+class SearchSaveInfo(JsonSchemaMixin):
+
+    save_input: bool
+    save_visualizations: bool
+    path: Optional[str] = None
+
+
+class LogLevel(StrEnum):
+
+    TRACE: str = "trace"
+    DEBUG: str = "debug"
+    INFO: str = "info"
+    WARN: str = "warn"
+    ERROR: str = "error"
+    FATAL: str = "fatal"
+
+
+@dataclass
+class SearchEngineParameters(JsonSchemaMixin):
+
+    visualization_setup: Optional[SearchVisualizationSetup] = None
+    search_data_save_info: Optional[SearchSaveInfo] = None
+    search_log_level: Optional[LogLevel] = None

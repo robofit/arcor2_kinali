@@ -25,7 +25,7 @@ class RestRobot(Robot):
     def __init__(self, robot_api: RestRobotService, obj_id: str, pose: Pose,
                  collision_model: Optional[Models] = None) -> None:
 
-        super(RestRobot, self).__init__(obj_id, pose, collision_model)
+        super(RestRobot, self).__init__(obj_id, obj_id, pose, collision_model)
         self.robot_api = robot_api
 
     def get_end_effectors_ids(self) -> Set[str]:

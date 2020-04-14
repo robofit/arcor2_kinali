@@ -9,9 +9,8 @@ from arcor2.action import action
 from arcor2 import rest
 
 from arcor2_kinali.services import systems
-from arcor2_kinali.data.search import SearchOutput, GripperSetup
+from arcor2_kinali.data.search import SearchOutput, GripperSetup, SearchEngineParameters
 
-# TODO handle rest exceptions
 
 URL = os.getenv("SEARCH_SERVICE_URL", "http://127.0.0.1:12000")
 
@@ -75,10 +74,9 @@ class SearchService(Service):
         :return:
         """
 
-        return rest.put_returning_list(f"{URL}/pick/suctions/poses", pose, {"item_id": item_id, "tool_id": tool_id},
-                                       data_cls=Pose)
+        return rest.get_list(f"{URL}/pick/suctions/poses", Pose, pose, params={"item_id": item_id, "tool_id": tool_id})
 
-    def put_gripper_configuration(self, item_id: str, tool_id: str, gripper_setup: GripperSetup) -> None:
+    def put_gripper_configuration(self, item_id: str, tool_id: str, gripper_setup: List[GripperSetup]) -> None:
         """
         Adds or updates gripper definitions for tool and item.
         :param item_id:
@@ -89,7 +87,7 @@ class SearchService(Service):
 
         rest.put(f"{URL}/pick/grippers", gripper_setup, {"item_id": item_id, "tool_id": tool_id})
 
-    def get_pick_poses_for_gripper(self, item_id: str, tool_id: str, pose: Pose) -> GripperSetup:
+    def get_pick_poses_for_gripper(self, item_id: str, tool_id: str, pose: Pose) -> List[GripperSetup]:
         """
         Gets pick poses for specific tool and item.
         :param item_id:
@@ -98,7 +96,7 @@ class SearchService(Service):
         :return:
         """
 
-        return rest.put(f"{URL}/pick/grippers/setup", pose, {"item_id": item_id, "tool_id": tool_id}, GripperSetup)
+        return rest.get_list(f"{URL}/pick/grippers/setup", GripperSetup, pose, {"item_id": item_id, "tool_id": tool_id})
 
     @action
     def search(self) -> SearchOutput:
@@ -107,6 +105,15 @@ class SearchService(Service):
         :return:
         """
         return rest.get(f"{URL}/search", SearchOutput)
+
+    def set_search_parameters(self, parameters: SearchEngineParameters) -> None:
+        """
+        Sets the search parameters.
+        :param parameters:
+        :return:
+        """
+
+        rest.put(f"{URL}/search", parameters)
 
     @action
     def visualization(self) -> Image:

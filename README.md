@@ -1,5 +1,4 @@
 
-
 ## Running in docker:
 
 ### Prerequisites:
@@ -8,37 +7,42 @@
  - docker-compose
 
 
-### Run system (stable version)
+### Run system 
 #### Windows
 
-```bash
-cd docker
-$env:ARCOR2_VERSION=$(cat ..\arcor2\VERSION)
-docker-compose up
-```
-
-#### Linux
-
-```bash
-cd docker
-export ARCOR2_VERSION=$(cat ../arcor2/VERSION)
-sudo -E docker-compose up
-```
-
-### Run newest build
-#### Windows
+It is recommended to use explicit stable version of each image instead of latest (as latest is considered unstable).
 
 ```bash
 cd docker
 $env:ARCOR2_VERSION="latest"
+$env:ARCOR2_BUILD_VERSION="latest"
+$env:ARCOR2_EXECUTION_VERSION="latest"
 docker-compose up
 ```
 
+For persistent variables, use this:
+
+```bash
+[Environment]::SetEnvironmentVariable("ARCOR2_VERSION", "latest", "User")
+[Environment]::SetEnvironmentVariable("ARCOR2_BUILD_VERSION", "latest", "User")
+[Environment]::SetEnvironmentVariable("ARCOR2_EXECUTION_VERSION", "latest", "User")
+```
+Restart powershell or open new window.
+```
+cd docker
+docker-compose up
+```
+
+
 #### Linux
+
+It is recommended to use explicit stable version of each image instead of latest (as latest is considered unstable).
 
 ```bash
 cd docker
 export ARCOR2_VERSION=latest
+export ARCOR2_BUILD_VERSION=latest
+export ARCOR2_EXECUTION_VERSION=latest
 sudo -E docker-compose up
 ```
 

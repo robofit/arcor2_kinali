@@ -15,6 +15,7 @@ services:
           - testitoff-robot-network
           - testitoff-search-network
           - testitoff-barcode-network
+          - testitoff-statistic-network 
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
@@ -22,6 +23,8 @@ services:
       - ARCOR2_EXECUTION_URL=ws://execution:6790
       - ARCOR2_BUILDER_URL=http://build:5007
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
+      - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
+
   build:
     image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}
     container_name: build
@@ -32,6 +35,8 @@ services:
     networks:           
       - testitoff-robot-network
       - testitoff-barcode-network
+      - testitoff-search-network
+      - testitoff-statistic-network 
   execution:
     image: arcor2/arcor2_execution_kinali:${ARCOR2_EXECUTION_VERSION:?ARCOR2_EXECUTION_VERSION env variable not set}
     container_name: execution
@@ -39,9 +44,12 @@ services:
           - testitoff-robot-network
           - testitoff-search-network
           - testitoff-barcode-network 
+          - testitoff-statistic-network 
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
+      - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
+      - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
       - ARCOR2_BUILDER_URL=http://build:5007
     ports:
       - "5009:5009"
@@ -133,6 +141,35 @@ services:
             - "14017:27017"
 
 
+  testitoff-statistic-webapi:
+        image: registry.gitlab.com/kinalisoft/test-it-off/statistic:0.1.0
+        container_name: "testitoff-statistic-webapi"
+        privileged: true
+        restart: always
+        environment:
+          - MONGODB_URL=testitoff-statistic-mongodb:27017
+        ports:
+          - "16000:16000"
+        networks:
+          - testitoff-statistic-network
+
+  testitoff-statistic-mongodb:
+        image: mongo:4.2.0-bionic
+        container_name: "testitoff-statistic-mongodb"
+        restart: always
+        environment:
+            - MONGO_DATA_DIR=/data/db
+            - MONGO_LOG_DIR=/dev/null
+        volumes:
+            - testitoff-statistic-mongodb:/data/db
+        networks:
+            - testitoff-statistic-network
+        expose:
+            - "27017"
+        ports:
+            - "16017:27017"
+
+
 
   project:
     image: registry.gitlab.com/kinalisoft/test-it-off/project-web-api:0.2.0
@@ -166,9 +203,11 @@ volumes:
   testitoff-robot-mongodb:  
   testitoff-search-mongodb:
   testitoff-barcode-mongodb:
+  testitoff-statistic-mongodb:
 
 networks:
   testitoff-robot-network: 
   testitoff-search-network:
   testitoff-barcode-network:
+  testitoff-statistic-network:
 

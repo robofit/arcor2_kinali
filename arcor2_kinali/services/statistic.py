@@ -6,7 +6,7 @@ from arcor2.data.common import ActionMetadata
 from arcor2.action import action
 from arcor2 import rest
 
-from arcor2_kinali.services import systems
+# from arcor2_kinali.services import systems
 
 URL = os.getenv("STATISTIC_SERVICE_URL", "http://127.0.0.1:16000")
 
@@ -19,11 +19,12 @@ class StatisticService(Service):
     def __init__(self, configuration_id: str):
 
         super(StatisticService, self).__init__(configuration_id)
-        systems.create(URL, self)
+        # systems.create(URL, self)
 
     @staticmethod
     def get_configuration_ids() -> Set[str]:
-        return systems.systems(URL)
+        # return systems.systems(URL)
+        return {"default"}
 
     @action
     def get_names(self) -> List[str]:

@@ -8,9 +8,7 @@ from arcor2 import rest
 
 from arcor2_kinali.services import systems
 
-# TODO handle rest exceptions
-
-URL = os.getenv("BARCODE_SERVICE_URL", "http://127.0.0.1:666")
+URL = os.getenv("BARCODE_SERVICE_URL", "http://127.0.0.1:14000")
 
 
 class BarcodeService(Service):

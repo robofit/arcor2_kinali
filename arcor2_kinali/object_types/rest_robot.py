@@ -22,10 +22,10 @@ class RestRobot(Robot):
     REST interface to the robot.
     """
 
-    def __init__(self, robot_api: RestRobotService, obj_id: str, pose: Pose,
+    def __init__(self, robot_api: RestRobotService, obj_id: str, obj_name: str, pose: Pose,
                  collision_model: Optional[Models] = None) -> None:
 
-        super(RestRobot, self).__init__(obj_id, obj_id, pose, collision_model)
+        super(RestRobot, self).__init__(obj_id, obj_name, pose, collision_model)
         self.robot_api = robot_api
 
     def get_end_effectors_ids(self) -> Set[str]:
@@ -40,7 +40,7 @@ class RestRobot(Robot):
         # TODO what if robot does not support get_robot_pose?
         for robot_id in robot_api.get_robot_ids():
             try:
-                yield RestRobot(robot_api, robot_id, robot_api.get_robot_pose(robot_id))
+                yield RestRobot(robot_api, robot_id, robot_id, robot_api.get_robot_pose(robot_id))
             except Arcor2Exception as e:
                 print(e)
 

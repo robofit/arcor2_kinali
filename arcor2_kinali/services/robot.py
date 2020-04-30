@@ -61,6 +61,11 @@ class RestRobotService(RobotService):
             return
         rest.delete(f"{URL}/collisions/{collision_id(obj)}")
 
+    def clear_collisions(self) -> None:
+
+        for coll_id in rest.get_list_primitive(f"{URL}/collisions", str):
+            rest.delete(f"{URL}/collisions/{coll_id}")
+
     def get_robot_ids(self) -> Set[str]:
 
         if self._robot_ids is None:

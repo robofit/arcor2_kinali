@@ -1,5 +1,6 @@
-from typing import Set, Optional, List
+from typing import FrozenSet, List
 import os
+from functools import lru_cache
 
 from arcor2.services import RobotService
 from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
@@ -31,13 +32,12 @@ class RestRobotService(RobotService):
 
         super(RestRobotService, self).__init__(configuration_id)
         systems.create(URL, self)
-        self._robot_ids: Optional[Set[str]] = None
 
     def destroy(self):
         systems.destroy(URL)
 
     @staticmethod
-    def get_configuration_ids() -> Set[str]:
+    def get_configuration_ids() -> FrozenSet[str]:
         return systems.systems(URL)
 
     def add_collision(self, obj: Generic) -> None:
@@ -61,11 +61,14 @@ class RestRobotService(RobotService):
             return
         rest.delete(f"{URL}/collisions/{collision_id(obj)}")
 
-    def get_robot_ids(self) -> Set[str]:
+    def clear_collisions(self) -> None:
 
-        if self._robot_ids is None:
-            self._robot_ids = set(rest.get_data(f"{URL}/robots"))
-        return self._robot_ids
+        for coll_id in rest.get_list_primitive(f"{URL}/collisions", str):
+            rest.delete(f"{URL}/collisions/{coll_id}")
+
+    @lru_cache(maxsize=None)
+    def get_robot_ids(self) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots"))
 
     def get_robot_pose(self, robot_id: str) -> Pose:
         return rest.get(f"{URL}/robots/{robot_id}/pose", Pose)
@@ -76,8 +79,9 @@ class RestRobotService(RobotService):
     def robot_joints(self, robot_id: str) -> List[Joint]:
         return rest.get_list(f"{URL}/robots/{robot_id}/joints", Joint)
 
-    def get_end_effectors_ids(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/endeffectors"))
+    @lru_cache(maxsize=None)
+    def get_end_effectors_ids(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/endeffectors"))
 
     def get_end_effector_pose(self, robot_id: str, end_effector_id: str) -> Pose:
         return rest.get(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/pose", Pose)
@@ -148,11 +152,13 @@ class RestRobotService(RobotService):
         assert robot_id == joints.robot_id
         rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
-    def inputs(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/inputs"))
+    @lru_cache(maxsize=None)
+    def inputs(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/inputs"))
 
-    def outputs(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/outputs"))
+    @lru_cache(maxsize=None)
+    def outputs(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/outputs"))
 
     @action
     def get_input(self, robot_id: str, input_id: str) -> float:
@@ -174,8 +180,9 @@ class RestRobotService(RobotService):
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return rest.put(f"{URL}/utils/focus", mfa, data_cls=Pose)
 
-    def grippers(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
+    @lru_cache(maxsize=None)
+    def grippers(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
     @action
     def grip(self, robot_id: str, gripper_id: str, position: float = 0.0, speed: float = 0.5, force: float = 0.5) -> \
@@ -207,8 +214,9 @@ class RestRobotService(RobotService):
     def is_item_gripped(self, robot_id: str, gripper_id: str) -> bool:
         return rest.get_primitive(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped", bool)
 
-    def suctions(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
+    @lru_cache(maxsize=None)
+    def suctions(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
 
     @action
     def suck(self, robot_id: str, suction_id: str) -> None:

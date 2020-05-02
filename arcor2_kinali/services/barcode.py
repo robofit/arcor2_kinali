@@ -1,4 +1,4 @@
-from typing import Set
+from typing import FrozenSet, List
 import os
 
 from arcor2.services import Service
@@ -22,16 +22,16 @@ class BarcodeService(Service):
         systems.create(URL, self)
 
     @staticmethod
-    def get_configuration_ids() -> Set[str]:
+    def get_configuration_ids() -> FrozenSet[str]:
         return systems.systems(URL)
 
     @action
-    def active_scanners(self) -> Set[str]:
+    def active_scanners(self) -> List[str]:
         """
         Gets scanners ids.
         :return:
         """
-        return set(rest.get_list_primitive(f"{URL}/scanners", str))
+        return rest.get_list_primitive(f"{URL}/scanners", str)
 
     @action
     def scan(self, scanner_id: str) -> str:

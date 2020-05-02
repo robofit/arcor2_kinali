@@ -1,4 +1,4 @@
-from typing import Set, List
+from typing import FrozenSet, List
 import os
 
 from PIL.Image import Image  # type: ignore
@@ -26,7 +26,7 @@ class SearchService(Service):
         systems.create(URL, self)
 
     @staticmethod
-    def get_configuration_ids() -> Set[str]:
+    def get_configuration_ids() -> FrozenSet[str]:
         return systems.systems(URL)
 
     @action

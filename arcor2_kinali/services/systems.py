@@ -1,4 +1,4 @@
-from typing import Optional, Set
+from typing import Optional, FrozenSet
 
 from arcor2 import rest
 from arcor2.services import Service
@@ -10,8 +10,8 @@ class SystemsException(Arcor2Exception):
 
 
 @rest.handle_exceptions(SystemsException, "Failed to get available configurations.")
-def systems(url: str) -> Set[str]:
-    return set(rest.get_data(f"{url}/systems"))
+def systems(url: str) -> FrozenSet[str]:
+    return frozenset(rest.get_data(f"{url}/systems"))
 
 
 @rest.handle_exceptions(SystemsException, "Failed to initialize the service.")

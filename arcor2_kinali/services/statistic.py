@@ -1,4 +1,4 @@
-from typing import Set, List
+from typing import FrozenSet, List
 import os
 
 from arcor2.services import Service
@@ -19,12 +19,10 @@ class StatisticService(Service):
     def __init__(self, configuration_id: str):
 
         super(StatisticService, self).__init__(configuration_id)
-        # systems.create(URL, self)
 
     @staticmethod
-    def get_configuration_ids() -> Set[str]:
-        # return systems.systems(URL)
-        return {"default"}
+    def get_configuration_ids() -> FrozenSet[str]:
+        return frozenset({"default"})
 
     @action
     def get_names(self) -> List[str]:

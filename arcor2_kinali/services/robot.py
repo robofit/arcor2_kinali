@@ -232,6 +232,7 @@ class RestRobotService(RobotService):
 
     move.__action__ = ActionMetadata(free=True, blocking=True)
     move_relative.__action__ = ActionMetadata(free=True, blocking=True)
+    move_relative_joints.__action__ = ActionMetadata(free=True, blocking=True)
     set_joints.__action__ = ActionMetadata(free=True, blocking=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True)

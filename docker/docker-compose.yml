@@ -142,7 +142,7 @@ services:
 
 
   testitoff-statistic-webapi:
-        image: registry.gitlab.com/kinalisoft/test-it-off/statistic:0.1.0
+        image: registry.gitlab.com/kinalisoft/test-it-off/statistic:0.2.0
         container_name: "testitoff-statistic-webapi"
         privileged: true
         restart: always

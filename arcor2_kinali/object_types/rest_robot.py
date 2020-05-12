@@ -3,12 +3,7 @@ from typing import Iterator, FrozenSet, Optional, List
 from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionMetadata, Joint, ProjectRobotJoints
 from arcor2.data.object_type import MeshFocusAction, Models
-try:
-    # for development
-    from arcor2_kinali.services.robot import RestRobotService, MoveTypeEnum
-except ImportError:
-    # for execution package
-    from services.robot import RestRobotService, MoveTypeEnum  # type: ignore
+from arcor2_kinali.services.robot import RestRobotService, MoveTypeEnum
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 
@@ -80,7 +75,7 @@ class RestRobot(Robot):
 
         assert 0.0 <= speed <= 1.0
 
-        self.robot_api.move_relative(end_effector_id, pose, rel_pose, move_type, speed)
+        self.robot_api.move_relative(self.id, end_effector_id, pose, rel_pose, move_type, speed)
 
     @action
     def move_relative_joints(self, end_effector_id: str, joints: ProjectRobotJoints,
@@ -115,11 +110,11 @@ class RestRobot(Robot):
 
     @action
     def get_input(self, input_id: str) -> float:
-        return self.robot_api.get_input(input_id)
+        return self.robot_api.get_input(self.id, input_id)
 
     @action
     def set_output(self, output_id: str, value: float) -> None:
-        self.robot_api.set_output(output_id, value)
+        self.robot_api.set_output(self.id, output_id, value)
 
     @action
     def get_output(self, output_id: str) -> float:

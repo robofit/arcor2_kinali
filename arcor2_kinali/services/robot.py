@@ -66,7 +66,7 @@ class RestRobotService(RobotService):
         for coll_id in rest.get_list_primitive(f"{URL}/collisions", str):
             rest.delete(f"{URL}/collisions/{coll_id}")
 
-    @lru_cache(maxsize=None)
+    @lru_cache()
     def get_robot_ids(self) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots"))
 
@@ -79,7 +79,7 @@ class RestRobotService(RobotService):
     def robot_joints(self, robot_id: str) -> List[Joint]:
         return rest.get_list(f"{URL}/robots/{robot_id}/joints", Joint)
 
-    @lru_cache(maxsize=None)
+    @lru_cache()
     def get_end_effectors_ids(self, robot_id: str) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/endeffectors"))
 
@@ -152,11 +152,11 @@ class RestRobotService(RobotService):
         assert robot_id == joints.robot_id
         rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
-    @lru_cache(maxsize=None)
+    @lru_cache()
     def inputs(self, robot_id: str) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/inputs"))
 
-    @lru_cache(maxsize=None)
+    @lru_cache()
     def outputs(self, robot_id: str) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/outputs"))
 
@@ -180,7 +180,7 @@ class RestRobotService(RobotService):
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return rest.put(f"{URL}/utils/focus", mfa, data_cls=Pose)
 
-    @lru_cache(maxsize=None)
+    @lru_cache()
     def grippers(self, robot_id: str) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
@@ -214,7 +214,7 @@ class RestRobotService(RobotService):
     def is_item_gripped(self, robot_id: str, gripper_id: str) -> bool:
         return rest.get_primitive(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped", bool)
 
-    @lru_cache(maxsize=None)
+    @lru_cache()
     def suctions(self, robot_id: str) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
 
@@ -253,4 +253,11 @@ RestRobotService.DYNAMIC_PARAMS = {
     "suction_id": (RestRobotService.suctions.__name__, {"robot_id"}),
     "input_id": (RestRobotService.inputs.__name__, {"robot_id"}),
     "output_id": (RestRobotService.outputs.__name__, {"robot_id"})
+}
+
+RestRobotService.CANCEL_MAPPING = {
+    RestRobotService.move.__name__: RestRobotService.stop.__name__,
+    RestRobotService.move_relative.__name__: RestRobotService.stop.__name__,
+    RestRobotService.move_relative_joints.__name__: RestRobotService.stop.__name__,
+    RestRobotService.set_joints.__name__: RestRobotService.stop.__name__
 }

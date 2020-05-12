@@ -13,7 +13,6 @@ from arcor2.parameter_plugins.relative_pose import RelativePose
 from arcor2_kinali.services import systems
 from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters, MoveRelativeParameters
 
-# TODO handle rest exceptions
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
 
@@ -121,7 +120,7 @@ class RestRobotService(RobotService):
         assert 0.0 <= speed <= 1.0
 
         body = MoveRelativeParameters(pose, rel_pose.position, rel_pose.orientation)
-        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative", body,
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/moveRelative", body,
                  {"moveType": move_type.value, "speed": speed})
 
     @action
@@ -141,7 +140,7 @@ class RestRobotService(RobotService):
         assert 0.0 <= speed <= 1.0
 
         body = MoveRelativeJointsParameters(joints.joints, rel_pose.position, rel_pose.orientation)
-        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative_joints", body,
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/moveRelativeJoints", body,
                  {"moveType": move_type.value, "speed": speed})
 
     @action

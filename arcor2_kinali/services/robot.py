@@ -1,6 +1,5 @@
-from typing import FrozenSet, List
+from typing import FrozenSet, List, TYPE_CHECKING, TypeVar, Callable
 import os
-from functools import lru_cache
 
 from arcor2.services import RobotService
 from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
@@ -15,6 +14,15 @@ from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters,
 
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
+
+# mypy work-around by GvR (https://github.com/python/mypy/issues/5107#issuecomment-529372406)
+if TYPE_CHECKING:
+    F = TypeVar('F', bound=Callable)
+
+    def lru_cache(maxsize: int = 128, typed: bool = False) -> Callable[[F], F]:
+        pass
+else:
+    from functools import lru_cache
 
 
 def collision_id(obj: Generic) -> str:

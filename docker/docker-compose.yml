@@ -26,6 +26,8 @@ services:
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
       - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
       - INTERACTION_SERVICE_URL=http://testitoff-interaction-webapi:17000
+      - ARCOR2_DATA_PATH=/root/data
+
 
   build:
     image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}

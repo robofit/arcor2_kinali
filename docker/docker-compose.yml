@@ -16,6 +16,7 @@ services:
           - testitoff-search-network
           - testitoff-barcode-network
           - testitoff-statistic-network 
+          - testitoff-interaction-network
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
@@ -24,6 +25,7 @@ services:
       - ARCOR2_BUILDER_URL=http://build:5007
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
       - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
+      - INTERACTION_SERVICE_URL=http://testitoff-interaction-webapi:17000
 
   build:
     image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}
@@ -37,6 +39,7 @@ services:
       - testitoff-barcode-network
       - testitoff-search-network
       - testitoff-statistic-network 
+      - testitoff-interaction-network
   execution:
     image: arcor2/arcor2_execution_kinali:${ARCOR2_EXECUTION_VERSION:?ARCOR2_EXECUTION_VERSION env variable not set}
     container_name: execution
@@ -45,6 +48,7 @@ services:
           - testitoff-search-network
           - testitoff-barcode-network 
           - testitoff-statistic-network 
+          - testitoff-interaction-network
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
@@ -140,6 +144,34 @@ services:
         ports:
             - "14017:27017"
 
+  testitoff-interaction-webapi:
+        image: registry.gitlab.com/kinalisoft/test-it-off/interaction:0.1.0
+        container_name: "testitoff-interaction-webapi"
+        privileged: true
+        restart: always
+        environment:
+          - MONGODB_URL=testitoff-interaction-mongodb:27017
+        ports:
+          - "17000:17000"
+        networks:
+          - testitoff-interaction-network
+
+  testitoff-interaction-mongodb:
+        image: mongo:4.2.0-bionic
+        container_name: "testitoff-interaction-mongodb"
+        restart: always
+        environment:
+            - MONGO_DATA_DIR=/data/db
+            - MONGO_LOG_DIR=/dev/null
+        volumes:
+            - testitoff-interaction-mongodb:/data/db
+        networks:
+            - testitoff-interaction-network
+        expose:
+            - "27017"
+        ports:
+            - "17017:27017"
+
 
   testitoff-statistic-webapi:
         image: registry.gitlab.com/kinalisoft/test-it-off/statistic:0.1.0
@@ -204,10 +236,12 @@ volumes:
   testitoff-search-mongodb:
   testitoff-barcode-mongodb:
   testitoff-statistic-mongodb:
+  testitoff-interaction-mongodb:
 
 networks:
   testitoff-robot-network: 
   testitoff-search-network:
   testitoff-barcode-network:
   testitoff-statistic-network:
+  testitoff-interaction-network:
 

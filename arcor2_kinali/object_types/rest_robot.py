@@ -3,12 +3,7 @@ from typing import Iterator, FrozenSet, Optional, List
 from arcor2.object_types import Robot
 from arcor2.data.common import Pose, ActionMetadata, Joint, ProjectRobotJoints
 from arcor2.data.object_type import MeshFocusAction, Models
-try:
-    # for development
-    from arcor2_kinali.services.robot import RestRobotService, MoveTypeEnum
-except ImportError:
-    # for execution package
-    from services.robot import RestRobotService, MoveTypeEnum  # type: ignore
+from arcor2_kinali.services.robot import RestRobotService, MoveTypeEnum
 from arcor2.action import action
 from arcor2.exceptions import Arcor2Exception
 
@@ -80,7 +75,24 @@ class RestRobot(Robot):
 
         assert 0.0 <= speed <= 1.0
 
-        self.robot_api.move_relative(end_effector_id, pose, rel_pose, move_type, speed)
+        self.robot_api.move_relative(self.id, end_effector_id, pose, rel_pose, move_type, speed)
+
+    @action
+    def move_relative_joints(self, end_effector_id: str, joints: ProjectRobotJoints,
+                             rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
+        """
+        Moves the robot's end-effector relatively to specific joint values.
+        :param end_effector_id: Unique end-effector id.
+        :param joints: Target joints.
+        :param rel_pose: Relative pose.
+        :param move_type: Type of move.
+        :param speed: Speed of move.
+        :return:
+        """
+
+        assert 0.0 <= speed <= 1.0
+
+        self.robot_api.move_relative_joints(self.id, end_effector_id, joints, rel_pose, move_type, speed)
 
     @action
     def set_joints(self, joints: ProjectRobotJoints, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
@@ -98,11 +110,15 @@ class RestRobot(Robot):
 
     @action
     def get_input(self, input_id: str) -> float:
-        return self.robot_api.get_input(input_id)
+        return self.robot_api.get_input(self.id, input_id)
 
     @action
     def set_output(self, output_id: str, value: float) -> None:
-        self.robot_api.set_output(output_id, value)
+        self.robot_api.set_output(self.id, output_id, value)
+
+    @action
+    def get_output(self, output_id: str) -> float:
+        return self.robot_api.get_output(self.id, output_id)
 
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return self.robot_api.focus(mfa)
@@ -128,6 +144,10 @@ class RestRobot(Robot):
         self.robot_api.set_opening(self.id, gripper_id, position, speed)
 
     @action
+    def get_gripper_opening(self, gripper_id: str) -> float:
+        return self.robot_api.get_gripper_opening(self.id, gripper_id)
+
+    @action
     def is_item_gripped(self, gripper_id: str) -> bool:
         return self.robot_api.is_item_gripped(self.id, gripper_id)
 
@@ -148,11 +168,14 @@ class RestRobot(Robot):
 
     move.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     move_relative.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
+    move_relative_joints.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     set_joints.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
+    get_output.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     grip.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     set_opening.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
+    get_gripper_opening.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     is_item_gripped.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     suck.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
     release.__action__ = ActionMetadata(free=True, blocking=True, composite=True, blackbox=True)
@@ -165,4 +188,11 @@ RestRobot.DYNAMIC_PARAMS = {
     "suction_id": (RestRobot.suctions.__name__, set()),
     "input_id": (RestRobot.inputs.__name__, set()),
     "output_id": (RestRobot.outputs.__name__, set())
+}
+
+RestRobotService.CANCEL_MAPPING = {
+    RestRobot.move.__name__: RestRobot.stop.__name__,
+    RestRobot.move_relative.__name__: RestRobot.stop.__name__,
+    RestRobot.move_relative_joints.__name__: RestRobot.stop.__name__,
+    RestRobot.set_joints.__name__: RestRobot.stop.__name__
 }

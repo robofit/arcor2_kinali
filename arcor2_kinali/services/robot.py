@@ -1,4 +1,4 @@
-from typing import Set, Optional, List
+from typing import FrozenSet, List, TYPE_CHECKING, TypeVar, Callable
 import os
 
 from arcor2.services import RobotService
@@ -12,9 +12,17 @@ from arcor2.parameter_plugins.relative_pose import RelativePose
 from arcor2_kinali.services import systems
 from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters, MoveRelativeParameters
 
-# TODO handle rest exceptions
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
+
+# mypy work-around by GvR (https://github.com/python/mypy/issues/5107#issuecomment-529372406)
+if TYPE_CHECKING:
+    F = TypeVar('F', bound=Callable)
+
+    def lru_cache(maxsize: int = 128, typed: bool = False) -> Callable[[F], F]:
+        pass
+else:
+    from functools import lru_cache
 
 
 def collision_id(obj: Generic) -> str:
@@ -31,13 +39,12 @@ class RestRobotService(RobotService):
 
         super(RestRobotService, self).__init__(configuration_id)
         systems.create(URL, self)
-        self._robot_ids: Optional[Set[str]] = None
 
     def destroy(self):
         systems.destroy(URL)
 
     @staticmethod
-    def get_configuration_ids() -> Set[str]:
+    def get_configuration_ids() -> FrozenSet[str]:
         return systems.systems(URL)
 
     def add_collision(self, obj: Generic) -> None:
@@ -61,11 +68,14 @@ class RestRobotService(RobotService):
             return
         rest.delete(f"{URL}/collisions/{collision_id(obj)}")
 
-    def get_robot_ids(self) -> Set[str]:
+    def clear_collisions(self) -> None:
 
-        if self._robot_ids is None:
-            self._robot_ids = set(rest.get_data(f"{URL}/robots"))
-        return self._robot_ids
+        for coll_id in rest.get_list_primitive(f"{URL}/collisions", str):
+            rest.delete(f"{URL}/collisions/{coll_id}")
+
+    @lru_cache()
+    def get_robot_ids(self) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots"))
 
     def get_robot_pose(self, robot_id: str) -> Pose:
         return rest.get(f"{URL}/robots/{robot_id}/pose", Pose)
@@ -76,8 +86,9 @@ class RestRobotService(RobotService):
     def robot_joints(self, robot_id: str) -> List[Joint]:
         return rest.get_list(f"{URL}/robots/{robot_id}/joints", Joint)
 
-    def get_end_effectors_ids(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/endeffectors"))
+    @lru_cache()
+    def get_end_effectors_ids(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/endeffectors"))
 
     def get_end_effector_pose(self, robot_id: str, end_effector_id: str) -> Pose:
         return rest.get(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/pose", Pose)
@@ -117,7 +128,7 @@ class RestRobotService(RobotService):
         assert 0.0 <= speed <= 1.0
 
         body = MoveRelativeParameters(pose, rel_pose.position, rel_pose.orientation)
-        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative", body,
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/moveRelative", body,
                  {"moveType": move_type.value, "speed": speed})
 
     @action
@@ -137,7 +148,7 @@ class RestRobotService(RobotService):
         assert 0.0 <= speed <= 1.0
 
         body = MoveRelativeJointsParameters(joints.joints, rel_pose.position, rel_pose.orientation)
-        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move_relative_joints", body,
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/moveRelativeJoints", body,
                  {"moveType": move_type.value, "speed": speed})
 
     @action
@@ -148,11 +159,13 @@ class RestRobotService(RobotService):
         assert robot_id == joints.robot_id
         rest.put(f"{URL}/robots/{robot_id}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
-    def inputs(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/inputs"))
+    @lru_cache()
+    def inputs(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/inputs"))
 
-    def outputs(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/outputs"))
+    @lru_cache()
+    def outputs(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/outputs"))
 
     @action
     def get_input(self, robot_id: str, input_id: str) -> float:
@@ -174,8 +187,9 @@ class RestRobotService(RobotService):
     def focus(self, mfa: MeshFocusAction) -> Pose:
         return rest.put(f"{URL}/utils/focus", mfa, data_cls=Pose)
 
-    def grippers(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
+    @lru_cache()
+    def grippers(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/grippers"))
 
     @action
     def grip(self, robot_id: str, gripper_id: str, position: float = 0.0, speed: float = 0.5, force: float = 0.5) -> \
@@ -207,8 +221,9 @@ class RestRobotService(RobotService):
     def is_item_gripped(self, robot_id: str, gripper_id: str) -> bool:
         return rest.get_primitive(f"{URL}/robots/{robot_id}/grippers/{gripper_id}/gripped", bool)
 
-    def suctions(self, robot_id: str) -> Set[str]:
-        return set(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
+    @lru_cache()
+    def suctions(self, robot_id: str) -> FrozenSet[str]:
+        return frozenset(rest.get_data(f"{URL}/robots/{robot_id}/suctions"))
 
     @action
     def suck(self, robot_id: str, suction_id: str) -> None:
@@ -224,6 +239,7 @@ class RestRobotService(RobotService):
 
     move.__action__ = ActionMetadata(free=True, blocking=True)
     move_relative.__action__ = ActionMetadata(free=True, blocking=True)
+    move_relative_joints.__action__ = ActionMetadata(free=True, blocking=True)
     set_joints.__action__ = ActionMetadata(free=True, blocking=True)
     get_input.__action__ = ActionMetadata(free=True, blocking=True)
     set_output.__action__ = ActionMetadata(free=True, blocking=True)
@@ -244,4 +260,11 @@ RestRobotService.DYNAMIC_PARAMS = {
     "suction_id": (RestRobotService.suctions.__name__, {"robot_id"}),
     "input_id": (RestRobotService.inputs.__name__, {"robot_id"}),
     "output_id": (RestRobotService.outputs.__name__, {"robot_id"})
+}
+
+RestRobotService.CANCEL_MAPPING = {
+    RestRobotService.move.__name__: RestRobotService.stop.__name__,
+    RestRobotService.move_relative.__name__: RestRobotService.stop.__name__,
+    RestRobotService.move_relative_joints.__name__: RestRobotService.stop.__name__,
+    RestRobotService.set_joints.__name__: RestRobotService.stop.__name__
 }

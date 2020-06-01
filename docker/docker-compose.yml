@@ -24,6 +24,8 @@ services:
       - ARCOR2_BUILDER_URL=http://build:5007
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
       - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
+      - ARCOR2_DATA_PATH=/root/data
+
 
   build:
     image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}
@@ -140,9 +142,10 @@ services:
         ports:
             - "14017:27017"
 
+  
 
   testitoff-statistic-webapi:
-        image: registry.gitlab.com/kinalisoft/test-it-off/statistic:0.1.0
+        image: registry.gitlab.com/kinalisoft/test-it-off/statistic:0.2.0
         container_name: "testitoff-statistic-webapi"
         privileged: true
         restart: always

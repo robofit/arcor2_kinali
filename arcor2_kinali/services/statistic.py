@@ -1,4 +1,4 @@
-from typing import Set, List
+from typing import FrozenSet, List
 import os
 
 from arcor2.services import Service
@@ -6,7 +6,8 @@ from arcor2.data.common import ActionMetadata
 from arcor2.action import action
 from arcor2 import rest
 
-# from arcor2_kinali.services import systems
+from arcor2_kinali.data.statistic import StatisticValue
+
 
 URL = os.getenv("STATISTIC_SERVICE_URL", "http://127.0.0.1:16000")
 
@@ -19,52 +20,68 @@ class StatisticService(Service):
     def __init__(self, configuration_id: str):
 
         super(StatisticService, self).__init__(configuration_id)
-        # systems.create(URL, self)
 
     @staticmethod
-    def get_configuration_ids() -> Set[str]:
-        # return systems.systems(URL)
-        return {"default"}
+    def get_configuration_ids() -> FrozenSet[str]:
+        return frozenset({"default"})
 
     @action
-    def get_names(self) -> List[str]:
+    def get_names(self, group_id: str) -> List[str]:
         """
-        Gets names of all tracked values.
+        Gets names of all tracked values stored in given group.
+        :param group_id:
         :return:
         """
-        return rest.get_list_primitive(f"{URL}/values", str)
+        return rest.get_list_primitive(f"{URL}/values/{group_id}", str)
 
     @action
-    def add_value(self, name: str, value: float) -> None:
+    def add_value(self, group_id: str, name: str, value: float) -> None:
         """
-        Logs value with the specified name.
+        Logs value with the specified group and name.
+        :param group_id:
         :param name:
         :param value:
         :return:
         """
 
-        rest.put(f"{URL}/values/{name}", params={"value": value})
+        rest.put(f"{URL}/values", params={"group_id": group_id, "name": name, "value": value})
 
     @action
-    def get_values(self, name: str) -> List[float]:
+    def get_groups(self) -> List[str]:
         """
-        Gets tracked values with the specified name. Values are sorted as were added to service.
+        Gets Ids of all stored groups.
         :param name:
         :return:
         """
 
-        return rest.get_list_primitive(f"{URL}/values/{name}", float)
+        return rest.get_list_primitive(f"{URL}/values", str)
 
     @action
-    def clear(self) -> None:
+    def get_values(self, group_id: str, name: str, since_timestamp: int = 0) -> List[StatisticValue]:
         """
-        Deletes all tracked values.
+        Gets tracked values with the specified name. Values are sorted as were added to service.
+        :param group_id: Logged value name.
+        :param name: Logged value name.
+        :param since_timestamp: The date and time, as a UNIX timestamp in nanoseconds, after which created values
+                                are returned.
         :return:
         """
 
-        rest.put(f"{URL}/values/clear")
+        return rest.get_list(f"{URL}/values/{group_id}/{name}", StatisticValue,
+                             params={"since_timestamp": since_timestamp})
+
+    @action
+    def delete_group(self, group_id: str) -> None:
+        """
+        Deletes all tracked values stored in given group.
+        :param group_id:
+        :return:
+        """
+
+        rest.delete(f"{URL}/values/{group_id}")
 
     get_names.__action__ = ActionMetadata(free=True, blocking=True)
     add_value.__action__ = ActionMetadata(free=True, blocking=True)
+    get_groups.__action__ = ActionMetadata(free=True, blocking=True)
     get_values.__action__ = ActionMetadata(free=True, blocking=True)
-    clear.__action__ = ActionMetadata(free=True, blocking=True)
+    delete_group.__action__ = ActionMetadata(free=True, blocking=True)

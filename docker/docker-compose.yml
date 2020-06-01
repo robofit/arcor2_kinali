@@ -21,7 +21,7 @@ services:
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000            
       - ARCOR2_EXECUTION_URL=ws://execution:6790
-      - ARCOR2_BUILDER_URL=http://build:5007
+      - ARCOR2_BUILDER_URL=http://build:5008
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
       - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
       - ARCOR2_DATA_PATH=/root/data
@@ -33,7 +33,7 @@ services:
     environment:
       - ARCOR2_PERSISTENT_STORAGE_URL=http://project:11000
     ports:
-      - "5007:5007"
+      - "5008:5008"
     networks:           
       - testitoff-robot-network
       - testitoff-barcode-network
@@ -52,7 +52,7 @@ services:
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
       - STATISTIC_SERVICE_URL=http://testitoff-statistic-webapi:16000
-      - ARCOR2_BUILDER_URL=http://build:5007
+      - ARCOR2_BUILDER_URL=http://build:5008
     ports:
       - "5009:5009"
   testitoff-robot-webapi:

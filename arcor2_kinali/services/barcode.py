@@ -21,6 +21,9 @@ class BarcodeService(Service):
         super(BarcodeService, self).__init__(configuration_id)
         systems.create(URL, self)
 
+    def cleanup(self) -> None:
+        systems.destroy(URL)
+
     @staticmethod
     def get_configuration_ids() -> FrozenSet[str]:
         return systems.systems(URL)

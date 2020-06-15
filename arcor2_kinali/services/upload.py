@@ -10,6 +10,7 @@ def main():
     upload("arcor2_kinali.services.search/SearchService")
     upload("arcor2_kinali.services.barcode/BarcodeService")
     upload("arcor2_kinali.services.statistic/StatisticService")
+    upload("arcor2_kinali.services.interaction/InteractionService")
 
 
 if __name__ == "__main__":

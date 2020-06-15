@@ -16,6 +16,10 @@ def systems(url: str) -> FrozenSet[str]:
 
 @rest.handle_exceptions(SystemsException, "Failed to initialize the service.")
 def create(url: str, srv: Service) -> None:
+
+    if active(url) == srv.configuration_id:
+        return
+
     rest.put(f"{url}/systems/{srv.configuration_id}/create")
 
 

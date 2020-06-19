@@ -36,18 +36,14 @@ class InteractionService(Service):
 
         rest.put(f"{URL}/dialog", params={"title": title, "content": content}, data=options)
 
-
     @action
     def get_dialog(self) -> DialogValue:
         """
         Gets names of all tracked values stored in given group.
         :return:
         """
-        try:
-            return rest.get(f"{URL}/dialog", DialogValue)
-        except rest.RestException:
-            return None
 
+        return rest.get(f"{URL}/dialog", DialogValue)
 
     @action
     def add_dialog_resolve(self, option: str) -> None:
@@ -69,7 +65,6 @@ class InteractionService(Service):
         """
 
         rest.put(f"{URL}/notification", params={"message": message, "level": level})
-
 
     @action
     def delete_notifications(self) -> None:

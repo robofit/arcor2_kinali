@@ -25,4 +25,3 @@ class NotificationValue(JsonSchemaMixin):
     message: str
     level: NotificationLevelEnum
     created: int
-

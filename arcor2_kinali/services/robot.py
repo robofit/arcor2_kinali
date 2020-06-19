@@ -40,7 +40,7 @@ class RestRobotService(RobotService):
         super(RestRobotService, self).__init__(configuration_id)
         systems.create(URL, self)
 
-    def destroy(self):
+    def cleanup(self) -> None:
         systems.destroy(URL)
 
     @staticmethod

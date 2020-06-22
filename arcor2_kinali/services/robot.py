@@ -73,6 +73,16 @@ class RestRobotService(RobotService):
         for coll_id in rest.get_list_primitive(f"{URL}/collisions", str):
             rest.delete(f"{URL}/collisions/{coll_id}")
 
+    def move_to_pose(self, robot_id: str, end_effector_id: str, target_pose: Pose, speed: float) -> None:
+
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", target_pose,
+                 {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
+
+    def move_to_joints(self, robot_id: str, target_joints: List[Joint], speed: float) -> None:
+
+        rest.put(f"{URL}/robots/{robot_id}/joints", target_joints,
+                 {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
+
     @lru_cache()
     def get_robot_ids(self) -> FrozenSet[str]:
         return frozenset(rest.get_data(f"{URL}/robots"))

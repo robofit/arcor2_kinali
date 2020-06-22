@@ -45,6 +45,12 @@ class RestRobot(Robot):
     def robot_joints(self) -> List[Joint]:
         return self.robot_api.robot_joints(self.id)
 
+    def move_to_pose(self, end_effector_id: str, target_pose: Pose, speed: float) -> None:
+        self.robot_api.move_to_pose(self.id, end_effector_id, target_pose, speed)
+
+    def move_to_joints(self, target_joints: List[Joint], speed: float) -> None:
+        self.robot_api.move_to_joints(self.id, target_joints, speed)
+
     @action
     def move(self, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """

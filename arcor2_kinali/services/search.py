@@ -3,7 +3,7 @@ import os
 
 from PIL.Image import Image  # type: ignore
 
-from arcor2.services import Service
+from arcor2.services.service import Service
 from arcor2.data.common import Pose, ActionMetadata
 from arcor2.action import action
 from arcor2 import rest

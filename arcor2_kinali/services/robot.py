@@ -1,7 +1,7 @@
 from typing import FrozenSet, List, TYPE_CHECKING, TypeVar, Callable
 import os
 
-from arcor2.services import RobotService
+from arcor2.services.robot_service import RobotService
 from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
 from arcor2.action import action
 from arcor2 import rest

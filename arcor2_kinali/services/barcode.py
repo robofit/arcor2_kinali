@@ -1,7 +1,7 @@
 from typing import FrozenSet, List
 import os
 
-from arcor2.services import Service
+from arcor2.services.service import Service
 from arcor2.data.common import ActionMetadata
 from arcor2.action import action
 from arcor2 import rest

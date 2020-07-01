@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
-from dataclasses_jsonschema import JsonSchemaMixin
-
 from arcor2.data.common import Pose, StrEnum
+
+from dataclasses_jsonschema import JsonSchemaMixin
 
 
 @dataclass

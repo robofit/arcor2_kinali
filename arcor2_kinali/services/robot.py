@@ -1,16 +1,16 @@
-from typing import FrozenSet, List, TYPE_CHECKING, TypeVar, Callable
 import os
+from typing import Callable, FrozenSet, List, TYPE_CHECKING, TypeVar
 
-from arcor2.services.robot_service import RobotService
-from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
+from arcor2 import DynamicParamTuple, rest
 from arcor2.action import action
-from arcor2 import rest
+from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
+from arcor2.data.object_type import MeshFocusAction, Model3dType
 from arcor2.object_types import Generic
-from arcor2.data.object_type import Model3dType, MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
+from arcor2.services.robot_service import RobotService
 
+from arcor2_kinali.data.robot import MoveRelativeJointsParameters, MoveRelativeParameters, MoveTypeEnum
 from arcor2_kinali.services import systems
-from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters, MoveRelativeParameters
 
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
@@ -264,12 +264,12 @@ class RestRobotService(RobotService):
 
 
 RestRobotService.DYNAMIC_PARAMS = {
-    "robot_id": (RestRobotService.get_robot_ids.__name__, set()),
-    "end_effector_id": (RestRobotService.get_end_effectors_ids.__name__, {"robot_id"}),
-    "gripper_id": (RestRobotService.grippers.__name__, {"robot_id"}),
-    "suction_id": (RestRobotService.suctions.__name__, {"robot_id"}),
-    "input_id": (RestRobotService.inputs.__name__, {"robot_id"}),
-    "output_id": (RestRobotService.outputs.__name__, {"robot_id"})
+    "robot_id": DynamicParamTuple(RestRobotService.get_robot_ids.__name__, set()),
+    "end_effector_id": DynamicParamTuple(RestRobotService.get_end_effectors_ids.__name__, {"robot_id"}),
+    "gripper_id": DynamicParamTuple(RestRobotService.grippers.__name__, {"robot_id"}),
+    "suction_id": DynamicParamTuple(RestRobotService.suctions.__name__, {"robot_id"}),
+    "input_id": DynamicParamTuple(RestRobotService.inputs.__name__, {"robot_id"}),
+    "output_id": DynamicParamTuple(RestRobotService.outputs.__name__, {"robot_id"})
 }
 
 RestRobotService.CANCEL_MAPPING = {

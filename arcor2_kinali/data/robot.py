@@ -1,9 +1,9 @@
-from typing import List
 from dataclasses import dataclass
+from typing import List
+
+from arcor2.data.common import Joint, Orientation, Pose, Position, StrEnum
 
 from dataclasses_jsonschema import JsonSchemaMixin
-
-from arcor2.data.common import Pose, Joint, StrEnum, Position, Orientation
 
 
 class MoveTypeEnum(StrEnum):

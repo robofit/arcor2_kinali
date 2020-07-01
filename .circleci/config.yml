@@ -19,12 +19,13 @@ jobs:
 
     steps:
       - checkout
-
-      # Download and cache dependencies
-      - run: sudo chown -R circleci:circleci /usr/local/bin
-      - run: sudo chown -R circleci:circleci /usr/local/lib/python3.8/site-packages
-      - restore_cache:  # ensure this step occurs *before* installing dependencies
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      
+      - restore_cache:
+          keys:
+            # when lock file changes, use increasingly general patterns to restore cache
+            - pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+            - pip-packages-v1-{{ .Branch }}-
+            - pip-packages-v1-
 
       - run:
           name: install dependencies
@@ -38,11 +39,9 @@ jobs:
             pip install pytest flake8 mypy flake8-import-order flake8-tidy-imports
 
       - save_cache:
-          key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
-            - ".venv"
-            - "/usr/local/bin"
-            - "/usr/local/lib/python3.8/site-packages"
+            - ~/.local/share/virtualenvs/venv  # this path depends on where pipenv creates a virtualenv
+          key: pip-packages-v1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
 
       - run:
           name: check style

@@ -1,7 +1,7 @@
 import os
 from typing import Callable, FrozenSet, List, TYPE_CHECKING, TypeVar
 
-from arcor2 import DynamicParamTuple, rest
+from arcor2 import rest
 from arcor2.action import action
 from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
 from arcor2.data.object_type import MeshFocusAction, Model3dType
@@ -264,12 +264,12 @@ class RestRobotService(RobotService):
 
 
 RestRobotService.DYNAMIC_PARAMS = {
-    "robot_id": DynamicParamTuple(RestRobotService.get_robot_ids.__name__, set()),
-    "end_effector_id": DynamicParamTuple(RestRobotService.get_end_effectors_ids.__name__, {"robot_id"}),
-    "gripper_id": DynamicParamTuple(RestRobotService.grippers.__name__, {"robot_id"}),
-    "suction_id": DynamicParamTuple(RestRobotService.suctions.__name__, {"robot_id"}),
-    "input_id": DynamicParamTuple(RestRobotService.inputs.__name__, {"robot_id"}),
-    "output_id": DynamicParamTuple(RestRobotService.outputs.__name__, {"robot_id"})
+    "robot_id": (RestRobotService.get_robot_ids.__name__, set()),
+    "end_effector_id": (RestRobotService.get_end_effectors_ids.__name__, {"robot_id"}),
+    "gripper_id": (RestRobotService.grippers.__name__, {"robot_id"}),
+    "suction_id": (RestRobotService.suctions.__name__, {"robot_id"}),
+    "input_id": (RestRobotService.inputs.__name__, {"robot_id"}),
+    "output_id": (RestRobotService.outputs.__name__, {"robot_id"})
 }
 
 RestRobotService.CANCEL_MAPPING = {

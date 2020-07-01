@@ -1,6 +1,5 @@
 from typing import FrozenSet, Iterator, List, Optional
 
-from arcor2 import DynamicParamTuple
 from arcor2.action import action
 from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
 from arcor2.data.object_type import MeshFocusAction, Models
@@ -190,11 +189,11 @@ class RestRobot(Robot):
 
 
 RestRobot.DYNAMIC_PARAMS = {
-    "end_effector_id": DynamicParamTuple(RestRobot.get_end_effectors_ids.__name__, set()),
-    "gripper_id": DynamicParamTuple(RestRobot.grippers.__name__, set()),
-    "suction_id": DynamicParamTuple(RestRobot.suctions.__name__, set()),
-    "input_id": DynamicParamTuple(RestRobot.inputs.__name__, set()),
-    "output_id": DynamicParamTuple(RestRobot.outputs.__name__, set())
+    "end_effector_id": (RestRobot.get_end_effectors_ids.__name__, set()),
+    "gripper_id": (RestRobot.grippers.__name__, set()),
+    "suction_id": (RestRobot.suctions.__name__, set()),
+    "input_id": (RestRobot.inputs.__name__, set()),
+    "output_id": (RestRobot.outputs.__name__, set())
 }
 
 RestRobotService.CANCEL_MAPPING = {

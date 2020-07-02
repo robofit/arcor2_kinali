@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-from arcor2.data.common import StrEnum
 from typing import List
+
+from arcor2.data.common import StrEnum
+
 from dataclasses_jsonschema import JsonSchemaMixin
 
 

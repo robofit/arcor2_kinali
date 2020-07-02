@@ -1,16 +1,16 @@
-from typing import FrozenSet, List, TYPE_CHECKING, TypeVar, Callable
 import os
+from typing import Callable, FrozenSet, List, TYPE_CHECKING, TypeVar
 
-from arcor2.services.robot_service import RobotService
-from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
-from arcor2.action import action
 from arcor2 import rest
+from arcor2.action import action
+from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
+from arcor2.data.object_type import MeshFocusAction, Model3dType
 from arcor2.object_types import Generic
-from arcor2.data.object_type import Model3dType, MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
+from arcor2.services.robot_service import RobotService
 
+from arcor2_kinali.data.robot import MoveRelativeJointsParameters, MoveRelativeParameters, MoveTypeEnum
 from arcor2_kinali.services import systems
-from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters, MoveRelativeParameters
 
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")

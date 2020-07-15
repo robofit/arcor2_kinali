@@ -1,16 +1,16 @@
-from typing import FrozenSet, List, TYPE_CHECKING, TypeVar, Callable
 import os
+from typing import Callable, FrozenSet, List, TYPE_CHECKING, TypeVar
 
-from arcor2.services import RobotService
-from arcor2.data.common import Pose, ActionMetadata, ProjectRobotJoints, Joint
-from arcor2.action import action
 from arcor2 import rest
+from arcor2.action import action
+from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
+from arcor2.data.object_type import MeshFocusAction, Model3dType, Models
 from arcor2.object_types import Generic
-from arcor2.data.object_type import Model3dType, MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
+from arcor2.services.robot_service import RobotService
 
+from arcor2_kinali.data.robot import MoveRelativeJointsParameters, MoveRelativeParameters, MoveTypeEnum
 from arcor2_kinali.services import systems
-from arcor2_kinali.data.robot import MoveTypeEnum, MoveRelativeJointsParameters, MoveRelativeParameters
 
 
 URL = os.getenv("REST_ROBOT_SERVICE_URL", "http://127.0.0.1:13000")
@@ -23,11 +23,6 @@ if TYPE_CHECKING:
         pass
 else:
     from functools import lru_cache
-
-
-def collision_id(obj: Generic) -> str:
-    assert obj.collision_model is not None
-    return obj.collision_model.type().value + "-" + obj.id
 
 
 class RestRobotService(RobotService):
@@ -47,31 +42,72 @@ class RestRobotService(RobotService):
     def get_configuration_ids() -> FrozenSet[str]:
         return systems.systems(URL)
 
-    def add_collision(self, obj: Generic) -> None:
-        if not obj.collision_model or obj.collision_model.type() == Model3dType.NONE:
-            return
-        params = obj.collision_model.to_dict()
+    def add_collision_model(self, model: Models, pose: Pose) -> None:
+        """
+        Adds arbitrary collision model to the collision scene.
+        :param model: Box, Sphere, Cylinder, Mesh
+        :param pose: Pose of the collision object.
+        :return:
+
+        Example usage:
+
+        >>> from arcor2.data.object_type import Box
+        >>> from arcor2.data.common import Pose, Position. Orientation
+        >>> box = Box("UniqueBoxId", 0.1, 0.1, 0.1)
+        >>> robot_service.add_collision_model(box, Pose(Position(1, 0, 0), Orientation(0, 0, 0, 1)))
+
+        """
+
+        model_id = model.id
+        params = model.to_dict()
         del params["id"]
-        params[obj.collision_model.__class__.__name__.lower() + "Id"] = collision_id(obj)
+        params[model.__class__.__name__.lower() + "Id"] = model_id
 
         # TODO temporary hack
-        if obj.collision_model.type() == Model3dType.MESH:
+        if model.type() == Model3dType.MESH:
             params["mesh_scale_x"] = 1.0
             params["mesh_scale_y"] = 1.0
             params["mesh_scale_z"] = 1.0
             params["transform_id"] = "world"
 
-        rest.put(f"{URL}/collisions/{obj.collision_model.type().value}", obj.pose, params)
+        rest.put(f"{URL}/collisions/{model.type().value}", pose, params)
+
+    def remove_collision_model_id(self, model_id: str) -> None:
+
+        rest.delete(f"{URL}/collisions/{model_id}")
+
+    def add_collision(self, obj: Generic) -> None:
+        """
+        Adds object's collision model to the collision scene.
+        :param obj: Scene object.
+        :return:
+        """
+
+        if not obj.collision_model or obj.collision_model.type() == Model3dType.NONE:
+            return
+
+        self.add_collision_model(obj.collision_model, obj.pose)
 
     def remove_collision(self, obj: Generic) -> None:
         if not obj.collision_model or obj.collision_model.type() == Model3dType.NONE:
             return
-        rest.delete(f"{URL}/collisions/{collision_id(obj)}")
+
+        self.remove_collision_model_id(obj.collision_model.id)
 
     def clear_collisions(self) -> None:
 
         for coll_id in rest.get_list_primitive(f"{URL}/collisions", str):
             rest.delete(f"{URL}/collisions/{coll_id}")
+
+    def move_to_pose(self, robot_id: str, end_effector_id: str, target_pose: Pose, speed: float) -> None:
+
+        rest.put(f"{URL}/robots/{robot_id}/endeffectors/{end_effector_id}/move", target_pose,
+                 {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
+
+    def move_to_joints(self, robot_id: str, target_joints: List[Joint], speed: float) -> None:
+
+        rest.put(f"{URL}/robots/{robot_id}/joints", target_joints,
+                 {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
 
     @lru_cache()
     def get_robot_ids(self) -> FrozenSet[str]:

@@ -1,13 +1,13 @@
-from typing import Iterator, FrozenSet, Optional, List
+from typing import FrozenSet, Iterator, List, Optional
 
-from arcor2.object_types import Robot
-from arcor2.data.common import Pose, ActionMetadata, Joint, ProjectRobotJoints
-from arcor2.data.object_type import MeshFocusAction, Models
-from arcor2_kinali.services.robot import RestRobotService, MoveTypeEnum
 from arcor2.action import action
+from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
+from arcor2.data.object_type import MeshFocusAction, Models
 from arcor2.exceptions import Arcor2Exception
-
+from arcor2.object_types import Robot
 from arcor2.parameter_plugins.relative_pose import RelativePose
+
+from arcor2_kinali.services.robot import MoveTypeEnum, RestRobotService
 
 # TODO how to copy docstrings of methods from service?
 
@@ -44,6 +44,12 @@ class RestRobot(Robot):
 
     def robot_joints(self) -> List[Joint]:
         return self.robot_api.robot_joints(self.id)
+
+    def move_to_pose(self, end_effector_id: str, target_pose: Pose, speed: float) -> None:
+        self.robot_api.move_to_pose(self.id, end_effector_id, target_pose, speed)
+
+    def move_to_joints(self, target_joints: List[Joint], speed: float) -> None:
+        self.robot_api.move_to_joints(self.id, target_joints, speed)
 
     @action
     def move(self, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:

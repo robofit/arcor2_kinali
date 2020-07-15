@@ -1,8 +1,8 @@
-from typing import Optional, FrozenSet
+from typing import FrozenSet, Optional
 
 from arcor2 import rest
-from arcor2.services import Service
 from arcor2.exceptions import Arcor2Exception
+from arcor2.services.service import Service
 
 
 class SystemsException(Arcor2Exception):

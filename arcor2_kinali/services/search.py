@@ -1,15 +1,15 @@
-from typing import FrozenSet, List
 import os
+from typing import FrozenSet, List
 
 from PIL.Image import Image  # type: ignore
 
-from arcor2.services import Service
-from arcor2.data.common import Pose, ActionMetadata
-from arcor2.action import action
 from arcor2 import rest
+from arcor2.action import action
+from arcor2.data.common import ActionMetadata, Pose
+from arcor2.services.service import Service
 
+from arcor2_kinali.data.search import GripperSetup, SearchEngineParameters, SearchOutput
 from arcor2_kinali.services import systems
-from arcor2_kinali.data.search import SearchOutput, GripperSetup, SearchEngineParameters
 
 
 URL = os.getenv("SEARCH_SERVICE_URL", "http://127.0.0.1:12000")

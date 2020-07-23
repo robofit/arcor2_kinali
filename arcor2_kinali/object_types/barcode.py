@@ -1,0 +1,34 @@
+from typing import List
+
+from arcor2 import rest
+from arcor2.action import action
+from arcor2.data.common import ActionMetadata
+
+from arcor2_kinali.object_types.kinali_object import KinaliObject
+
+
+class Barcode(KinaliObject):
+    """
+    REST interface to the barcode service.
+    """
+
+    @action
+    def active_scanners(self) -> List[str]:
+        """
+        Gets scanners ids.
+        :return:
+        """
+        return rest.get_list_primitive(f"{self.settings.url}/scanners", str)
+
+    @action
+    def scan(self, scanner_id: str) -> str:
+        """
+        Gets scan.
+        :param scanner_id:
+        :return:
+        """
+
+        return rest.get_primitive(f"{self.settings.url}/scanners/{scanner_id}/scan", str)
+
+    active_scanners.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    scan.__action__ = ActionMetadata(blocking=True)  # type: ignore

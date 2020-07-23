@@ -3,11 +3,12 @@
 
 from setuptools import setup, find_packages  # type: ignore
 
-import arcor2_kinali
-
 setup(
     name='arcor2_kinali',
-    version=arcor2_kinali.version(),
+    version_config={
+        "template": "{tag}.dev{cc}",
+        "starting_version": "0.1.0"
+    },
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     package_data={"arcor2_kinali": ["py.typed"]},
     url='',
@@ -15,10 +16,11 @@ setup(
     author='Robo@FIT',
     author_email='imaterna@fit.vut.cz',
     description='',
+    setup_requires=['bad-setuptools-git-version'],
     install_requires=[
         'dataclasses',
         'dataclasses-jsonschema[fast-validation]',
-        'arcor2==0.7.1',
+        'arcor2==0.8.0b1',
         'Pillow'
     ],
     zip_safe=False,

@@ -1,36 +1,19 @@
-import os
-from typing import FrozenSet, List
+from typing import List
 
 from PIL.Image import Image  # type: ignore
 
 from arcor2 import rest
 from arcor2.action import action
 from arcor2.data.common import ActionMetadata, Pose
-from arcor2.services.service import Service
 
 from arcor2_kinali.data.search import GripperSetup, SearchEngineParameters, SearchOutput
-from arcor2_kinali.services import systems
+from arcor2_kinali.object_types.kinali_object import KinaliObject
 
 
-URL = os.getenv("SEARCH_SERVICE_URL", "http://127.0.0.1:12000")
-
-
-class SearchService(Service):
+class Search(KinaliObject):
     """
     REST interface to the search service.
     """
-
-    def __init__(self, configuration_id: str):
-
-        super(SearchService, self).__init__(configuration_id)
-        systems.create(URL, self)
-
-    def cleanup(self) -> None:
-        systems.destroy(URL)
-
-    @staticmethod
-    def get_configuration_ids() -> FrozenSet[str]:
-        return systems.systems(URL)
 
     @action
     def grab_image(self) -> None:
@@ -38,7 +21,7 @@ class SearchService(Service):
         Grabs image and stores to internal cache.
         :return:
         """
-        rest.put(f"{URL}/capture/grab")
+        rest.put(f"{self.settings.url}/capture/grab")
 
     @action
     def get_image(self) -> Image:
@@ -47,7 +30,7 @@ class SearchService(Service):
         :return:
         """
 
-        return rest.get_image(f"{URL}/capture/image")
+        return rest.get_image(f"{self.settings.url}/capture/image")
 
     @action
     def get_pose(self) -> Pose:
@@ -55,7 +38,7 @@ class SearchService(Service):
         Gets capture device pose in actual initialized spatial system space.
         :return:
         """
-        return rest.get(f"{URL}/capture/pose", Pose)
+        return rest.get(f"{self.settings.url}/capture/pose", Pose)
 
     def put_suction_configuration(self, item_id: str, tool_id: str, poses: List[Pose]) -> None:
         """
@@ -65,7 +48,7 @@ class SearchService(Service):
         :param poses:
         :return:
         """
-        rest.put(f"{URL}/pick/suctions", poses, {"item_id": item_id, "tool_id": tool_id})
+        rest.put(f"{self.settings.url}/pick/suctions", poses, {"item_id": item_id, "tool_id": tool_id})
 
     @action
     def get_pick_poses_for_suction(self, item_id: str, tool_id: str, pose: Pose) -> List[Pose]:
@@ -77,7 +60,8 @@ class SearchService(Service):
         :return:
         """
 
-        return rest.get_list(f"{URL}/pick/suctions/poses", Pose, pose, params={"item_id": item_id, "tool_id": tool_id})
+        return rest.get_list(f"{self.settings.url}/pick/suctions/poses", Pose, pose,
+                             params={"item_id": item_id, "tool_id": tool_id})
 
     def put_gripper_configuration(self, item_id: str, tool_id: str, gripper_setup: List[GripperSetup]) -> None:
         """
@@ -88,7 +72,7 @@ class SearchService(Service):
         :return:
         """
 
-        rest.put(f"{URL}/pick/grippers", gripper_setup, {"item_id": item_id, "tool_id": tool_id})
+        rest.put(f"{self.settings.url}/pick/grippers", gripper_setup, {"item_id": item_id, "tool_id": tool_id})
 
     def get_pick_poses_for_gripper(self, item_id: str, tool_id: str, pose: Pose) -> List[GripperSetup]:
         """
@@ -99,7 +83,8 @@ class SearchService(Service):
         :return:
         """
 
-        return rest.get_list(f"{URL}/pick/grippers/setup", GripperSetup, pose, {"item_id": item_id, "tool_id": tool_id})
+        return rest.get_list(f"{self.settings.url}/pick/grippers/setup", GripperSetup, pose,
+                             {"item_id": item_id, "tool_id": tool_id})
 
     @action
     def search(self) -> SearchOutput:
@@ -107,7 +92,7 @@ class SearchService(Service):
         Searches items based on search engine configuration and images stored in internal cache.
         :return:
         """
-        return rest.get(f"{URL}/search", SearchOutput)
+        return rest.get(f"{self.settings.url}/search", SearchOutput)
 
     def set_search_parameters(self, parameters: SearchEngineParameters) -> None:
         """
@@ -116,7 +101,7 @@ class SearchService(Service):
         :return:
         """
 
-        rest.put(f"{URL}/search", parameters)
+        rest.put(f"{self.settings.url}/search", parameters)
 
     @action
     def visualization(self) -> Image:
@@ -125,11 +110,11 @@ class SearchService(Service):
         :return:
         """
 
-        return rest.get_image(f"{URL}/search/visualization")
+        return rest.get_image(f"{self.settings.url}/search/visualization")
 
-    grab_image.__action__ = ActionMetadata(free=True, blocking=True)
-    get_image.__action__ = ActionMetadata(free=True, blocking=True)
-    get_pose.__action__ = ActionMetadata(free=True, blocking=True)
-    get_pick_poses_for_suction.__action__ = ActionMetadata(free=True, blocking=True)
-    search.__action__ = ActionMetadata(free=True, blocking=True)
-    visualization.__action__ = ActionMetadata(free=True, blocking=True)
+    grab_image.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_image.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_pose.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_pick_poses_for_suction.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    search.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    visualization.__action__ = ActionMetadata(blocking=True)  # type: ignore

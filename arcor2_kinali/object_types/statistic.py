@@ -1,30 +1,18 @@
-import os
-from typing import FrozenSet, List
+from typing import List
 
 from arcor2 import rest
 from arcor2.action import action
 from arcor2.data.common import ActionMetadata
-from arcor2.services.service import Service
 
 
 from arcor2_kinali.data.statistic import StatisticValue
+from arcor2_kinali.object_types.kinali_object import KinaliObject
 
 
-URL = os.getenv("STATISTIC_SERVICE_URL", "http://127.0.0.1:16000")
-
-
-class StatisticService(Service):
+class Statistic(KinaliObject):
     """
     Statistic Web API Reference.
     """
-
-    def __init__(self, configuration_id: str):
-
-        super(StatisticService, self).__init__(configuration_id)
-
-    @staticmethod
-    def get_configuration_ids() -> FrozenSet[str]:
-        return frozenset({"default"})
 
     @action
     def get_names(self, group_id: str) -> List[str]:
@@ -33,7 +21,7 @@ class StatisticService(Service):
         :param group_id:
         :return:
         """
-        return rest.get_list_primitive(f"{URL}/values/{group_id}", str)
+        return rest.get_list_primitive(f"{self.settings.url}/values/{group_id}", str)
 
     @action
     def add_value(self, group_id: str, name: str, value: float) -> None:
@@ -45,7 +33,7 @@ class StatisticService(Service):
         :return:
         """
 
-        rest.put(f"{URL}/values", params={"group_id": group_id, "name": name, "value": value})
+        rest.put(f"{self.settings.url}/values", params={"group_id": group_id, "name": name, "value": value})
 
     @action
     def get_groups(self) -> List[str]:
@@ -55,7 +43,7 @@ class StatisticService(Service):
         :return:
         """
 
-        return rest.get_list_primitive(f"{URL}/values", str)
+        return rest.get_list_primitive(f"{self.settings.url}/values", str)
 
     @action
     def get_values(self, group_id: str, name: str, since_timestamp: int = 0) -> List[StatisticValue]:
@@ -68,7 +56,7 @@ class StatisticService(Service):
         :return:
         """
 
-        return rest.get_list(f"{URL}/values/{group_id}/{name}", StatisticValue,
+        return rest.get_list(f"{self.settings.url}/values/{group_id}/{name}", StatisticValue,
                              params={"since_timestamp": since_timestamp})
 
     @action
@@ -79,10 +67,10 @@ class StatisticService(Service):
         :return:
         """
 
-        rest.delete(f"{URL}/values/{group_id}")
+        rest.delete(f"{self.settings.url}/values/{group_id}")
 
-    get_names.__action__ = ActionMetadata(free=True, blocking=True)
-    add_value.__action__ = ActionMetadata(free=True, blocking=True)
-    get_groups.__action__ = ActionMetadata(free=True, blocking=True)
-    get_values.__action__ = ActionMetadata(free=True, blocking=True)
-    delete_group.__action__ = ActionMetadata(free=True, blocking=True)
+    get_names.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    add_value.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_groups.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_values.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    delete_group.__action__ = ActionMetadata(blocking=True)  # type: ignore

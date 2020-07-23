@@ -1,28 +1,17 @@
-import os
-from typing import FrozenSet, List
+from typing import List
 
 from arcor2 import rest
 from arcor2.action import action
 from arcor2.data.common import ActionMetadata
-from arcor2.services.service import Service
 
 from arcor2_kinali.data.interaction import DialogValue, NotificationLevelEnum, NotificationValue
+from arcor2_kinali.object_types.kinali_object import KinaliObject
 
-URL = os.getenv("INTERACTION_SERVICE_URL", "http://127.0.0.1:17000")
 
-
-class InteractionService(Service):
+class Interaction(KinaliObject):
     """
     REST interface to the barcode service.
     """
-
-    def __init__(self, configuration_id: str):
-
-        super(InteractionService, self).__init__(configuration_id)
-
-    @staticmethod
-    def get_configuration_ids() -> FrozenSet[str]:
-        return frozenset({"default"})
 
     @action
     def add_dialog(self, title: str, content: str, options: List[str]) -> None:
@@ -34,7 +23,7 @@ class InteractionService(Service):
         :return:
         """
 
-        rest.put(f"{URL}/dialog", params={"title": title, "content": content}, data=options)
+        rest.put(f"{self.settings.url}/dialog", params={"title": title, "content": content}, data=options)
 
     @action
     def get_dialog(self) -> DialogValue:
@@ -43,7 +32,7 @@ class InteractionService(Service):
         :return:
         """
 
-        return rest.get(f"{URL}/dialog", DialogValue)
+        return rest.get(f"{self.settings.url}/dialog", DialogValue)
 
     @action
     def add_dialog_resolve(self, option: str) -> None:
@@ -53,7 +42,7 @@ class InteractionService(Service):
         :return:
         """
 
-        rest.put(f"{URL}/dialog/resolve", params={"option": option})
+        rest.put(f"{self.settings.url}/dialog/resolve", params={"option": option})
 
     @action
     def add_notification(self, message: str, level: NotificationLevelEnum) -> None:
@@ -64,7 +53,7 @@ class InteractionService(Service):
         :return:
         """
 
-        rest.put(f"{URL}/notification", params={"message": message, "level": level})
+        rest.put(f"{self.settings.url}/notification", params={"message": message, "level": level})
 
     @action
     def delete_notifications(self) -> None:
@@ -73,7 +62,7 @@ class InteractionService(Service):
         :return:
         """
 
-        rest.delete(f"{URL}/notifications")
+        rest.delete(f"{self.settings.url}/notifications")
 
     @action
     def get_notifications(self, since_imestamp: int) -> List[NotificationValue]:
@@ -82,11 +71,12 @@ class InteractionService(Service):
         :param since_imestamp:
         :return:
         """
-        return rest.get_list(f"{URL}/notifications", NotificationValue, params={"since_imestamp": since_imestamp})
+        return rest.get_list(f"{self.settings.url}/notifications",
+                             NotificationValue, params={"since_imestamp": since_imestamp})
 
-    add_dialog.__action__ = ActionMetadata(free=True, blocking=True)
-    get_dialog.__action__ = ActionMetadata(free=True, blocking=True)
-    add_dialog_resolve.__action__ = ActionMetadata(free=True, blocking=True)
-    add_notification.__action__ = ActionMetadata(free=True, blocking=True)
-    delete_notifications.__action__ = ActionMetadata(free=True, blocking=True)
-    get_notifications.__action__ = ActionMetadata(free=True, blocking=True)
+    add_dialog.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_dialog.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    add_dialog_resolve.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    add_notification.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    delete_notifications.__action__ = ActionMetadata(blocking=True)  # type: ignore
+    get_notifications.__action__ = ActionMetadata(blocking=True)  # type: ignore

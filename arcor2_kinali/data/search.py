@@ -59,8 +59,14 @@ class LogLevel(StrEnum):
 
 
 @dataclass
+class SearchLogLevel(JsonSchemaMixin):
+
+    level: LogLevel
+
+
+@dataclass
 class SearchEngineParameters(JsonSchemaMixin):
 
     visualization_setup: Optional[SearchVisualizationSetup] = None
     search_data_save_info: Optional[SearchSaveInfo] = None
-    search_log_level: Optional[LogLevel] = None
+    search_log_level: Optional[SearchLogLevel] = None

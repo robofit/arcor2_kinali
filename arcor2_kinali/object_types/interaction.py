@@ -1,7 +1,6 @@
 from typing import List
 
 from arcor2 import rest
-from arcor2.action import action
 from arcor2.data.common import ActionMetadata
 
 from arcor2_kinali.data.interaction import DialogValue, NotificationLevelEnum, NotificationValue
@@ -13,7 +12,6 @@ class Interaction(KinaliObject):
     REST interface to the barcode service.
     """
 
-    @action
     def add_dialog(self, title: str, content: str, options: List[str]) -> None:
         """
         Logs value with the specified group and name.
@@ -25,7 +23,6 @@ class Interaction(KinaliObject):
 
         rest.put(f"{self.settings.url}/dialog", params={"title": title, "content": content}, data=options)
 
-    @action
     def get_dialog(self) -> DialogValue:
         """
         Gets names of all tracked values stored in given group.
@@ -34,7 +31,6 @@ class Interaction(KinaliObject):
 
         return rest.get(f"{self.settings.url}/dialog", DialogValue)
 
-    @action
     def add_dialog_resolve(self, option: str) -> None:
         """
         Logs value with the specified group and name.
@@ -44,7 +40,6 @@ class Interaction(KinaliObject):
 
         rest.put(f"{self.settings.url}/dialog/resolve", params={"option": option})
 
-    @action
     def add_notification(self, message: str, level: NotificationLevelEnum) -> None:
         """
         Logs value with the specified group and name.
@@ -55,7 +50,6 @@ class Interaction(KinaliObject):
 
         rest.put(f"{self.settings.url}/notification", params={"message": message, "level": level})
 
-    @action
     def delete_notifications(self) -> None:
         """
         Deletes all tracked values stored in given group.
@@ -64,7 +58,6 @@ class Interaction(KinaliObject):
 
         rest.delete(f"{self.settings.url}/notifications")
 
-    @action
     def get_notifications(self, since_imestamp: int) -> List[NotificationValue]:
         """
         Gets names of all tracked values stored in given group.

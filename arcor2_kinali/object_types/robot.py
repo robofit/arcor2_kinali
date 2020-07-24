@@ -1,7 +1,6 @@
 from typing import Callable, List, Set, TYPE_CHECKING, TypeVar
 
 from arcor2 import DynamicParamTuple as DPT, rest
-from arcor2.action import action
 from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
 from arcor2.data.object_type import MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
@@ -48,7 +47,6 @@ class RestRobot(KinaliRobot):
     def get_end_effector_pose(self, end_effector_id: str) -> Pose:
         return rest.get(f"{self.settings.url}/endeffectors/{end_effector_id}/pose", Pose)
 
-    @action
     def move(self, end_effector_id: str, pose: Pose, move_type: MoveTypeEnum,
              speed: float = 0.5) -> None:
         """
@@ -66,7 +64,6 @@ class RestRobot(KinaliRobot):
         rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/move", pose,
                  {"moveType": move_type.value, "speed": speed})
 
-    @action
     def move_relative(self, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
                       move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
@@ -86,7 +83,6 @@ class RestRobot(KinaliRobot):
         rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/moveRelative", body,
                  {"moveType": move_type.value, "speed": speed})
 
-    @action
     def move_relative_joints(self, end_effector_id: str, joints: ProjectRobotJoints,
                              rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
         """
@@ -106,7 +102,6 @@ class RestRobot(KinaliRobot):
         rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/moveRelativeJoints", body,
                  {"moveType": move_type.value, "speed": speed})
 
-    @action
     def set_joints(self, joints: ProjectRobotJoints, move_type: MoveTypeEnum,
                    speed: float = 0.5) -> None:
 
@@ -122,17 +117,14 @@ class RestRobot(KinaliRobot):
     def outputs(self) -> Set[str]:
         return set(rest.get_data(f"{self.settings.url}/outputs"))
 
-    @action
     def get_input(self, input_id: str) -> float:
         return rest.get_primitive(f"{self.settings.url}/inputs/{input_id}", float)
 
-    @action
     def set_output(self, output_id: str, value: float) -> None:
 
         assert 0.0 <= value <= 1.0
         rest.put(f"{self.settings.url}/outputs/{output_id}", params={"value": value})
 
-    @action
     def get_output(self, output_id: str) -> float:
         return rest.get_primitive(f"{self.settings.url}/outputs/{output_id}", float)
 
@@ -143,7 +135,6 @@ class RestRobot(KinaliRobot):
     def grippers(self) -> Set[str]:
         return set(rest.get_data(f"{self.settings.url}/grippers"))
 
-    @action
     def grip(self, gripper_id: str, position: float = 0.0, speed: float = 0.5, force: float = 0.5) -> \
             None:
 
@@ -154,7 +145,6 @@ class RestRobot(KinaliRobot):
         rest.put(f"{self.settings.url}/grippers/{gripper_id}/grip",
                  params={"position": position, "speed": speed, "force": force})
 
-    @action
     def set_opening(self, gripper_id: str, position: float = 1.0, speed: float = 0.5) -> None:
 
         assert 0.0 <= position <= 1.0
@@ -163,12 +153,10 @@ class RestRobot(KinaliRobot):
         rest.put(f"{self.settings.url}/grippers/{gripper_id}/opening",
                  params={"position": position, "speed": speed})
 
-    @action
     def get_gripper_opening(self, gripper_id: str) -> float:
 
         return rest.get_primitive(f"{self.settings.url}/grippers/{gripper_id}/opening", float)
 
-    @action
     def is_item_gripped(self, gripper_id: str) -> bool:
         return rest.get_primitive(f"{self.settings.url}/grippers/{gripper_id}/gripped", bool)
 
@@ -176,15 +164,12 @@ class RestRobot(KinaliRobot):
     def suctions(self) -> Set[str]:
         return set(rest.get_data(f"{self.settings.url}/suctions"))
 
-    @action
     def suck(self, suction_id: str) -> None:
         rest.put(f"{self.settings.url}/suctions/{suction_id}/suck")
 
-    @action
     def release(self, suction_id: str) -> None:
         rest.put(f"{self.settings.url}/suctions/{suction_id}/release")
 
-    @action
     def is_item_attached(self, suction_id: str) -> bool:
         return rest.get_primitive(f"{self.settings.url}/suctions/{suction_id}/attached", bool)
 

@@ -1,7 +1,6 @@
 from typing import List
 
 from arcor2 import rest
-from arcor2.action import action
 from arcor2.data.common import ActionMetadata
 
 from arcor2_kinali.object_types.kinali_object import KinaliObject
@@ -12,7 +11,6 @@ class Barcode(KinaliObject):
     REST interface to the barcode service.
     """
 
-    @action
     def active_scanners(self) -> List[str]:
         """
         Gets scanners ids.
@@ -20,7 +18,6 @@ class Barcode(KinaliObject):
         """
         return rest.get_list_primitive(f"{self.settings.url}/scanners", str)
 
-    @action
     def scan(self, scanner_id: str) -> str:
         """
         Gets scan.

@@ -3,7 +3,6 @@ from typing import List
 from PIL.Image import Image  # type: ignore
 
 from arcor2 import rest
-from arcor2.action import action
 from arcor2.data.common import ActionMetadata, Pose
 
 from arcor2_kinali.data.search import GripperSetup, SearchEngineParameters, SearchOutput
@@ -15,7 +14,6 @@ class Search(KinaliObject):
     REST interface to the search service.
     """
 
-    @action
     def grab_image(self) -> None:
         """
         Grabs image and stores to internal cache.
@@ -23,7 +21,6 @@ class Search(KinaliObject):
         """
         rest.put(f"{self.settings.url}/capture/grab")
 
-    @action
     def get_image(self) -> Image:
         """
         Gets RGB image from internal cache, if there is any.
@@ -32,7 +29,6 @@ class Search(KinaliObject):
 
         return rest.get_image(f"{self.settings.url}/capture/image")
 
-    @action
     def get_pose(self) -> Pose:
         """
         Gets capture device pose in actual initialized spatial system space.
@@ -50,7 +46,6 @@ class Search(KinaliObject):
         """
         rest.put(f"{self.settings.url}/pick/suctions", poses, {"item_id": item_id, "tool_id": tool_id})
 
-    @action
     def get_pick_poses_for_suction(self, item_id: str, tool_id: str, pose: Pose) -> List[Pose]:
         """
         Gets pick poses for specific suction and item.
@@ -86,7 +81,6 @@ class Search(KinaliObject):
         return rest.get_list(f"{self.settings.url}/pick/grippers/setup", GripperSetup, pose,
                              {"item_id": item_id, "tool_id": tool_id})
 
-    @action
     def search(self) -> SearchOutput:
         """
         Searches items based on search engine configuration and images stored in internal cache.
@@ -103,7 +97,6 @@ class Search(KinaliObject):
 
         rest.put(f"{self.settings.url}/search", parameters)
 
-    @action
     def visualization(self) -> Image:
         """
         Gets RGB visualization from last search run, if there is any.

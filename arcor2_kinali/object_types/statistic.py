@@ -1,7 +1,6 @@
 from typing import List
 
 from arcor2 import rest
-from arcor2.action import action
 from arcor2.data.common import ActionMetadata
 
 
@@ -14,7 +13,6 @@ class Statistic(KinaliObject):
     Statistic Web API Reference.
     """
 
-    @action
     def get_names(self, group_id: str) -> List[str]:
         """
         Gets names of all tracked values stored in given group.
@@ -23,7 +21,6 @@ class Statistic(KinaliObject):
         """
         return rest.get_list_primitive(f"{self.settings.url}/values/{group_id}", str)
 
-    @action
     def add_value(self, group_id: str, name: str, value: float) -> None:
         """
         Logs value with the specified group and name.
@@ -35,7 +32,6 @@ class Statistic(KinaliObject):
 
         rest.put(f"{self.settings.url}/values", params={"group_id": group_id, "name": name, "value": value})
 
-    @action
     def get_groups(self) -> List[str]:
         """
         Gets Ids of all stored groups.
@@ -45,7 +41,6 @@ class Statistic(KinaliObject):
 
         return rest.get_list_primitive(f"{self.settings.url}/values", str)
 
-    @action
     def get_values(self, group_id: str, name: str, since_timestamp: int = 0) -> List[StatisticValue]:
         """
         Gets tracked values with the specified name. Values are sorted as were added to service.
@@ -59,7 +54,6 @@ class Statistic(KinaliObject):
         return rest.get_list(f"{self.settings.url}/values/{group_id}/{name}", StatisticValue,
                              params={"since_timestamp": since_timestamp})
 
-    @action
     def delete_group(self, group_id: str) -> None:
         """
         Deletes all tracked values stored in given group.

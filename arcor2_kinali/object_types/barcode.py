@@ -11,6 +11,8 @@ class Barcode(KinaliObject):
     REST interface to the barcode service.
     """
 
+    _ABSTRACT = False
+
     def active_scanners(self) -> List[str]:
         """
         Gets scanners ids.

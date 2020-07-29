@@ -1,17 +1,27 @@
+from dataclasses import dataclass
 from typing import List
 
 from arcor2 import rest
 from arcor2.data.common import ActionMetadata
 
+from dataclasses_jsonschema import JsonSchemaMixin
 
-from arcor2_kinali.data.statistic import StatisticValue
-from arcor2_kinali.object_types.kinali_object import KinaliObject
+from .kinali_object import KinaliObject
+
+
+@dataclass
+class StatisticValue(JsonSchemaMixin):
+
+    value: float
+    created: int
 
 
 class Statistic(KinaliObject):
     """
     Statistic Web API Reference.
     """
+
+    _ABSTRACT = False
 
     def get_names(self, group_id: str) -> List[str]:
         """

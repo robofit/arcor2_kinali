@@ -9,10 +9,10 @@ from arcor2.clients import scene_service
 from arcor2.data.common import Joint, Pose, ProjectRobotJoints, uid
 from arcor2.data.object_type import Box
 
-from arcor2_kinali.data.interaction import NotificationLevelEnum
-from arcor2_kinali.data.robot import MoveTypeEnum
-from arcor2_kinali.data.search import LogLevel, SearchEngineParameters, SearchLogLevel
 from arcor2_kinali.object_types import Barcode, Interaction, KinaliSettings, RestRobot, Search, Statistic
+from arcor2_kinali.object_types.interaction import NotificationLevelEnum
+from arcor2_kinali.object_types.robot import MoveTypeEnum
+from arcor2_kinali.object_types.search import LogLevel, SearchEngineParameters, SearchLogLevel
 
 
 def main() -> None:

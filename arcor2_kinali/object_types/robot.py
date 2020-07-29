@@ -1,12 +1,14 @@
+from dataclasses import dataclass
 from typing import Callable, List, Set, TYPE_CHECKING, TypeVar
 
 from arcor2 import DynamicParamTuple as DPT, rest
-from arcor2.data.common import ActionMetadata, Joint, Pose, ProjectRobotJoints
+from arcor2.data.common import ActionMetadata, Joint, Orientation, Pose, Position, ProjectRobotJoints, StrEnum
 from arcor2.data.object_type import MeshFocusAction
 from arcor2.parameter_plugins.relative_pose import RelativePose
 
-from arcor2_kinali.data.robot import MoveRelativeJointsParameters, MoveRelativeParameters, MoveTypeEnum
-from arcor2_kinali.object_types.kinali_object import KinaliRobot
+from dataclasses_jsonschema import JsonSchemaMixin
+
+from .kinali_object import KinaliRobot
 
 
 # mypy work-around by GvR (https://github.com/python/mypy/issues/5107#issuecomment-529372406)
@@ -19,10 +21,35 @@ else:
     from functools import lru_cache
 
 
+class MoveTypeEnum(StrEnum):
+
+    AVOID_COLLISIONS: str = "AvoidCollisions"
+    LINE: str = "Line"
+    SIMPLE: str = "Simple"
+
+
+@dataclass
+class MoveRelativeParameters(JsonSchemaMixin):
+
+    pose: Pose
+    position: Position  # relative position
+    orientation: Orientation  # relative orientation
+
+
+@dataclass
+class MoveRelativeJointsParameters(JsonSchemaMixin):
+
+    joints: List[Joint]
+    position: Position  # relative position
+    orientation: Orientation  # relative orientation
+
+
 class RestRobot(KinaliRobot):
     """
     REST interface to the robot service.
     """
+
+    _ABSTRACT = False
 
     def move_to_pose(self, end_effector_id: str, target_pose: Pose, speed: float) -> None:
 

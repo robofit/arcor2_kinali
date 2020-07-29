@@ -1,16 +1,43 @@
+from dataclasses import dataclass
 from typing import List
 
 from arcor2 import rest
-from arcor2.data.common import ActionMetadata
+from arcor2.data.common import ActionMetadata, StrEnum
 
-from arcor2_kinali.data.interaction import DialogValue, NotificationLevelEnum, NotificationValue
-from arcor2_kinali.object_types.kinali_object import KinaliObject
+from dataclasses_jsonschema import JsonSchemaMixin
+
+from .kinali_object import KinaliObject
+
+
+class NotificationLevelEnum(StrEnum):
+
+    INFO: str = "Info"
+    WARN: str = "Warn"
+    ERROR: str = "Error"
+
+
+@dataclass
+class DialogValue(JsonSchemaMixin):
+
+    title: str
+    content: str
+    options: List[str]
+
+
+@dataclass
+class NotificationValue(JsonSchemaMixin):
+
+    message: str
+    level: NotificationLevelEnum
+    created: int
 
 
 class Interaction(KinaliObject):
     """
     REST interface to the barcode service.
     """
+
+    _ABSTRACT = False
 
     def add_dialog(self, title: str, content: str, options: List[str]) -> None:
         """

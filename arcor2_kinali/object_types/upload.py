@@ -6,6 +6,8 @@ from arcor2.object_types.upload import upload
 
 def main() -> None:
 
+    upload("arcor2_kinali.object_types.kinali_object/KinaliObject")
+    upload("arcor2_kinali.object_types.kinali_object/KinaliRobot")
     upload("arcor2_kinali.object_types.barcode/Barcode")
     upload("arcor2_kinali.object_types.interaction/Interaction")
     upload("arcor2_kinali.object_types.robot/RestRobot")

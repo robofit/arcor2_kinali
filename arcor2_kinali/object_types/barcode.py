@@ -3,10 +3,10 @@ from typing import List
 from arcor2 import rest
 from arcor2.data.common import ActionMetadata
 
-from arcor2_kinali.object_types.kinali_object import KinaliObject
+from arcor2_kinali.object_types.kinali_abstract_object import KinaliAbstractObject
 
 
-class Barcode(KinaliObject):
+class Barcode(KinaliAbstractObject):
     """
     REST interface to the barcode service.
     """

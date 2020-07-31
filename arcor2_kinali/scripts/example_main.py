@@ -3,6 +3,8 @@
 
 """
 This is an example of the main script without usage of Resources class.
+
+So far, it is necessary to initialize Scene service (0.1.0) separately - for instance using Swagger UI.
 """
 
 from arcor2.clients import scene_service

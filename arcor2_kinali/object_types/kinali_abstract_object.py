@@ -1,9 +1,8 @@
 from dataclasses import dataclass
-from typing import Set
+from typing import Set, cast
 
 from arcor2 import rest
-from arcor2.data.common import Pose
-from arcor2.object_types.abstract import Generic, Robot, Settings
+from arcor2.object_types.abstract import Generic, Settings
 
 
 @dataclass
@@ -12,11 +11,18 @@ class KinaliSettings(Settings):
     configuration_id: str
 
 
-class KinaliMixin:
+class KinaliAbstractObject(Generic):
+    """
+    Object (without pose) that serves as a base class for standard feature services.
+    """
+
+    def __init__(self, obj_id: str, name: str, settings: KinaliSettings) -> None:
+        super(KinaliAbstractObject, self).__init__(obj_id, name, settings)
+        self._create()
 
     @property
     def settings(self) -> KinaliSettings:
-        return self._settings  # type: ignore  # TODO solve this using typing_extensions/Protocol?
+        return cast(KinaliSettings, super(KinaliAbstractObject, self).settings)
 
     def cleanup(self) -> None:
         rest.put(f"{self.settings.url}/systems/destroy")
@@ -32,22 +38,7 @@ class KinaliMixin:
             rest.put(f"{self.settings.url}/systems/{self.settings.configuration_id}/create")
 
 
-class KinaliObject(KinaliMixin, Generic):
-
-    def __init__(self, obj_id: str, name: str, settings: KinaliSettings) -> None:
-        super(KinaliObject, self).__init__(obj_id, name, settings)
-        self._create()
-
-
-class KinaliRobot(KinaliMixin, Robot):
-
-    def __init__(self, obj_id: str, name: str, pose: Pose, settings: KinaliSettings) -> None:
-        super(KinaliRobot, self).__init__(obj_id, name, pose, settings)
-        self._create()
-
-
 __all__ = [
     KinaliSettings.__name__,
-    KinaliObject.__name__,
-    KinaliRobot.__name__
+    KinaliAbstractObject.__name__,
 ]

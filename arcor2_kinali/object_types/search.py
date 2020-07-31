@@ -8,7 +8,7 @@ from arcor2.data.common import ActionMetadata, Pose, StrEnum
 
 from dataclasses_jsonschema import JsonSchemaMixin
 
-from .kinali_object import KinaliObject
+from .kinali_abstract_object import KinaliAbstractObject
 
 
 @dataclass
@@ -77,7 +77,7 @@ class SearchEngineParameters(JsonSchemaMixin):
     search_log_level: Optional[SearchLogLevel] = None
 
 
-class Search(KinaliObject):
+class Search(KinaliAbstractObject):
     """
     REST interface to the search service.
     """

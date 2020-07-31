@@ -9,16 +9,19 @@ from arcor2.clients import scene_service
 from arcor2.data.common import Joint, Pose, ProjectRobotJoints, uid
 from arcor2.data.object_type import Box
 
-from arcor2_kinali.object_types import Barcode, Interaction, KinaliSettings, RestRobot, Search, Statistic
-from arcor2_kinali.object_types.interaction import NotificationLevelEnum
-from arcor2_kinali.object_types.robot import MoveTypeEnum
-from arcor2_kinali.object_types.search import LogLevel, SearchEngineParameters, SearchLogLevel
+from arcor2_kinali.object_types.barcode import Barcode
+from arcor2_kinali.object_types.interaction import Interaction, NotificationLevelEnum
+from arcor2_kinali.object_types.kinali_abstract_object import KinaliSettings
+from arcor2_kinali.object_types.kinali_abstract_robot import KinaliRobotSettings
+from arcor2_kinali.object_types.kinali_robot import KinaliRobot, MoveTypeEnum
+from arcor2_kinali.object_types.search import LogLevel, Search, SearchEngineParameters, SearchLogLevel
+from arcor2_kinali.object_types.statistic import Statistic
 
 
 def main() -> None:
 
-    aubo = RestRobot(uid(), "Whatever", Pose(), KinaliSettings("http://127.0.0.1:13000", "aubo"))
-    simatic = RestRobot(uid(), "Whatever", Pose(), KinaliSettings("http://127.0.0.1:13001", "simatic"))
+    aubo = KinaliRobot(uid(), "Whatever", Pose(), KinaliRobotSettings("http://127.0.0.1:13000", "aubo"))
+    simatic = KinaliRobot(uid(), "Whatever", Pose(), KinaliRobotSettings("http://127.0.0.1:13001", "simatic"))
     barcode = Barcode(uid(), "Whatever", KinaliSettings("http://127.0.0.1:14000", "simulator"))
     search = Search(uid(), "Whatever", KinaliSettings("http://127.0.0.1:12000", "simulator"))
     interaction = Interaction(uid(), "Whatever", KinaliSettings("http://127.0.0.1:17000", "simulator"))

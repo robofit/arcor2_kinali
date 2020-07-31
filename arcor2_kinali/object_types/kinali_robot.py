@@ -8,7 +8,7 @@ from arcor2.parameter_plugins.relative_pose import RelativePose
 
 from dataclasses_jsonschema import JsonSchemaMixin
 
-from .kinali_object import KinaliRobot
+from .kinali_abstract_robot import KinaliAbstractRobot
 
 
 # mypy work-around by GvR (https://github.com/python/mypy/issues/5107#issuecomment-529372406)
@@ -44,7 +44,7 @@ class MoveRelativeJointsParameters(JsonSchemaMixin):
     orientation: Orientation  # relative orientation
 
 
-class RestRobot(KinaliRobot):
+class KinaliRobot(KinaliAbstractRobot):
     """
     REST interface to the robot service.
     """
@@ -216,17 +216,17 @@ class RestRobot(KinaliRobot):
     is_item_attached.__action__ = ActionMetadata(blocking=True)  # type: ignore
 
 
-RestRobot.DYNAMIC_PARAMS = {
-    "end_effector_id": DPT(RestRobot.get_end_effectors_ids.__name__, set()),
-    "gripper_id": DPT(RestRobot.grippers.__name__, set()),
-    "suction_id": DPT(RestRobot.suctions.__name__, set()),
-    "input_id": DPT(RestRobot.inputs.__name__, set()),
-    "output_id": DPT(RestRobot.outputs.__name__, set())
+KinaliRobot.DYNAMIC_PARAMS = {
+    "end_effector_id": DPT(KinaliRobot.get_end_effectors_ids.__name__, set()),
+    "gripper_id": DPT(KinaliRobot.grippers.__name__, set()),
+    "suction_id": DPT(KinaliRobot.suctions.__name__, set()),
+    "input_id": DPT(KinaliRobot.inputs.__name__, set()),
+    "output_id": DPT(KinaliRobot.outputs.__name__, set())
 }
 
-RestRobot.CANCEL_MAPPING = {
-    RestRobot.move.__name__: RestRobot.stop.__name__,
-    RestRobot.move_relative.__name__: RestRobot.stop.__name__,
-    RestRobot.move_relative_joints.__name__: RestRobot.stop.__name__,
-    RestRobot.set_joints.__name__: RestRobot.stop.__name__
+KinaliRobot.CANCEL_MAPPING = {
+    KinaliRobot.move.__name__: KinaliRobot.stop.__name__,
+    KinaliRobot.move_relative.__name__: KinaliRobot.stop.__name__,
+    KinaliRobot.move_relative_joints.__name__: KinaliRobot.stop.__name__,
+    KinaliRobot.set_joints.__name__: KinaliRobot.stop.__name__
 }

@@ -6,7 +6,7 @@ from arcor2.data.common import ActionMetadata, StrEnum
 
 from dataclasses_jsonschema import JsonSchemaMixin
 
-from .kinali_object import KinaliObject
+from .kinali_abstract_object import KinaliAbstractObject
 
 
 class NotificationLevelEnum(StrEnum):
@@ -32,7 +32,7 @@ class NotificationValue(JsonSchemaMixin):
     created: int
 
 
-class Interaction(KinaliObject):
+class Interaction(KinaliAbstractObject):
     """
     REST interface to the barcode service.
     """

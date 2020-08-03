@@ -6,4 +6,4 @@ COPY . /root/arcor2_kinali
 RUN cd ~/arcor2_kinali/ \
 	&& pip install -e .
 
-EXPOSE 6789
+CMD ["python", "/root/arcor2_kinali/arcor2_kinali/object_types/upload.py"] 

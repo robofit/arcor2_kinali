@@ -41,7 +41,7 @@ services:
     image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}
     container_name: build
     environment:
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://arserver:5012
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://mocks:5012
     ports:
       - "5008:5008"
     networks:           

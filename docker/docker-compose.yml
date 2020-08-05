@@ -21,8 +21,10 @@ services:
     environment:
       - REST_ROBOT_SERVICE_URL=http://testitoff-robot-webapi:13000 
       - SEARCH_SERVICE_URL=http://testitoff-search-webapi:12000
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://mocks:5012
-      - ARCOR2_SCENE_SERVICE_URL=http://testitoff-scene-webapi:15000            
+      # - ARCOR2_PERSISTENT_STORAGE_URL=http://mocks:5012
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://project:10000
+      # - ARCOR2_SCENE_SERVICE_URL=http://mocks:5013
+      - ARCOR2_SCENE_SERVICE_URL=http://testitoff-scene-webapi:15000
       - ARCOR2_EXECUTION_URL=ws://execution:6790
       - ARCOR2_BUILDER_URL=http://build:5008
       - BARCODE_SERVICE_URL=http://testitoff-barcode-webapi:14000
@@ -159,7 +161,7 @@ services:
             - "12017:27017" 
 
   testitoff-scene-webapi:
-        image: registry.gitlab.com/kinalisoft/test-it-off/scene:0.1.0
+        image: registry.gitlab.com/kinalisoft/test-it-off/scene:0.1.1
         container_name: "testitoff-scene"
         restart: always
         ports:
@@ -200,10 +202,10 @@ services:
 
 
   project:
-    image: registry.gitlab.com/kinalisoft/test-it-off/project-web-api:0.2.0
+    image: registry.gitlab.com/kinalisoft/test-it-off/project:0.3.0
     container_name: "project"
     ports:
-      - "11000-11001:11000-11001"
+      - "10000-10001:10000-10001"
     environment:
       MONGODB_URL: mongodb:27017
     links:

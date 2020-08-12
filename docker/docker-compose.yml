@@ -9,7 +9,7 @@ services:
       - build
       - execution
       - testitoff-robot-webapi
-      - mocks
+      # - mocks
     ports:
       - "6789:6789"
     networks:
@@ -32,18 +32,19 @@ services:
       - ARCOR2_DATA_PATH=/root/data
       - INTERACTION_SERVICE_URL=http://testitoff-interaction-webapi:17000
 
-  mocks:
-    image: arcor2/arcor2_mocks:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
-    container_name: mocks
-    networks:
-          - testitoff-robot-network
+#  mocks:
+#    image: arcor2/arcor2_mocks:${ARCOR2_VERSION:?ARCOR2_VERSION env variable not set}
+#    container_name: mocks
+#    networks:
+#          - testitoff-robot-network
 
 
   build:
     image: arcor2/arcor2_build:${ARCOR2_BUILD_VERSION:?ARCOR2_BUILD_VERSION env variable not set}
     container_name: build
     environment:
-      - ARCOR2_PERSISTENT_STORAGE_URL=http://mocks:5012
+      # - ARCOR2_PERSISTENT_STORAGE_URL=http://mocks:5012
+      - ARCOR2_PERSISTENT_STORAGE_URL=http://project:10000
     ports:
       - "5008:5008"
     networks:           

@@ -1,4 +1,4 @@
 #!/bin/bash 
-VERSION='0.8.0'
+VERSION=`python3 ../setup.py --version`
 docker image push arcor2/arcor2_upload_kinali:$VERSION
 

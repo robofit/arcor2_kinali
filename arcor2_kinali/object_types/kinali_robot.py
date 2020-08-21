@@ -54,13 +54,17 @@ class KinaliRobot(KinaliAbstractRobot):
 
     def move_to_pose(self, end_effector_id: str, target_pose: Pose, speed: float) -> None:
 
-        rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/move", target_pose,
-                 {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
+        with self._move_lock:
+
+            rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/move", target_pose,
+                     {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
 
     def move_to_joints(self, target_joints: List[Joint], speed: float) -> None:
 
-        rest.put(f"{self.settings.url}/joints", target_joints,
-                 {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
+        with self._move_lock:
+
+            rest.put(f"{self.settings.url}/joints", target_joints,
+                     {"moveType": MoveTypeEnum.AVOID_COLLISIONS.value, "speed": speed})
 
     def stop(self) -> None:
         rest.put(f"{self.settings.url}/stop")
@@ -89,8 +93,10 @@ class KinaliRobot(KinaliAbstractRobot):
 
         assert 0.0 <= speed <= 1.0
 
-        rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/move", pose,
-                 {"moveType": move_type.value, "speed": speed})
+        with self._move_lock:
+
+            rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/move", pose,
+                     {"moveType": move_type.value, "speed": speed})
 
     def move_relative(self, end_effector_id: str, pose: Pose, rel_pose: RelativePose,
                       move_type: MoveTypeEnum, speed: float = 0.5) -> None:
@@ -107,9 +113,11 @@ class KinaliRobot(KinaliAbstractRobot):
 
         assert 0.0 <= speed <= 1.0
 
-        body = MoveRelativeParameters(pose, rel_pose.position, rel_pose.orientation)
-        rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/moveRelative", body,
-                 {"moveType": move_type.value, "speed": speed})
+        with self._move_lock:
+
+            body = MoveRelativeParameters(pose, rel_pose.position, rel_pose.orientation)
+            rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/moveRelative", body,
+                     {"moveType": move_type.value, "speed": speed})
 
     def move_relative_joints(self, end_effector_id: str, joints: ProjectRobotJoints,
                              rel_pose: RelativePose, move_type: MoveTypeEnum, speed: float = 0.5) -> None:
@@ -126,16 +134,20 @@ class KinaliRobot(KinaliAbstractRobot):
 
         assert 0.0 <= speed <= 1.0
 
-        body = MoveRelativeJointsParameters(joints.joints, rel_pose.position, rel_pose.orientation)
-        rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/moveRelativeJoints", body,
-                 {"moveType": move_type.value, "speed": speed})
+        with self._move_lock:
+
+            body = MoveRelativeJointsParameters(joints.joints, rel_pose.position, rel_pose.orientation)
+            rest.put(f"{self.settings.url}/endeffectors/{end_effector_id}/moveRelativeJoints", body,
+                     {"moveType": move_type.value, "speed": speed})
 
     def set_joints(self, joints: ProjectRobotJoints, move_type: MoveTypeEnum,
                    speed: float = 0.5) -> None:
 
         assert 0.0 <= speed <= 1.0
         # assert robot_id == joints.robot_id
-        rest.put(f"{self.settings.url}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
+
+        with self._move_lock:
+            rest.put(f"{self.settings.url}/joints", joints.joints, {"moveType": move_type.value, "speed": speed})
 
     @lru_cache()
     def inputs(self) -> Set[str]:
